@@ -1,0 +1,471 @@
+・ #
+# _ = _
+Variable value setting command
+_ Of # _ specifies the variable number.
+= _ _ Specifies a number or a predefined variable.
+Define the variable and set the value at the same time.
+Example: # 1 = 1
+Example: # 1 = # 2
+
+# _ + _
+Addition command
+_ Of # _ specifies the variable number.
++ _ _ Specifies a number or a predefined variable.
+Adds the specified numerical value or the value of the variable to the variable.
+Example: # 1 + 1
+Example: # 1 + # 2
+
+# _-_
+Subtraction instruction
+_ Of # _ specifies the variable number.
+-__ Specifies a number or a predefined variable.
+Subtract the specified number or the value of the variable to the variable.
+Example: # 1-1
+Example: # 1- # 2
+
+# _ = _: # _ = _
+# _ = _: # _ + _
+# _ = _: # _-_
+# _ = _: P_
+Conditional branch instruction
+_ Of # _ specifies the variable number.
+-__ Specifies a number or a predefined variable.
+: # _ _ Specifies the variable number.
+= _ _ Specifies a number or a predefined variable.
++ _ _ Specifies a number or a predefined variable.
+-__ Specifies a number or a predefined variable.
+_ Of P_ specifies the jump destination.
+: If the values ​​on the right and left sides of the previous = are the same, execute after:.
+Example: # 1 = 1: # 1 = 0
+Example: # 1 = # 2: # 1 = # 3
+Example: # 1 = 1: # 1 + 1
+Example: # 1 = # 2: # 1 + # 3
+Example: # 1 = 1: # 1-1
+Example: # 1 = # 2: # 1- # 3
+Example: # 1 = 1: P1
+
+
+
+・ A
+A_
+XA axis selection command
+_ Is the device number specified by SET A_ = COM_ and specifies 1 to 100.
+Select the XA axis to operate with the K_ instruction.
+Example: A1
+
+
+
+B_
+RCP axis selection command
+_ Is the device number specified by SET A_ = COM_ and specifies 1 to 100.
+Select the RCP axis to operate with the K_ instruction.
+Example: A1
+
+
+
+・ C
+C
+RCP homing command
+Describe without numerical values.
+The origin of the selected RCP axis is returned by the B_command.
+Example: C
+
+
+
+・ D
+unused
+
+
+
+・ E
+E_ S_ A_
+RCP axis movement command
+_ Of E_ specifies the absolute position of the RCP axis (0.01 mm unit, maximum stroke of 0 mm to RCP axis).
+_ Of S_ specifies the speed (0.01mm / s unit, 0.01mm / s to RCP axis allowable speed).
+_ Of A_ specifies the acceleration / deceleration (0.01G unit, 0.01G-3.0G).
+Move the selected RCP axis with the B_command.
+Example: E100 S500 A0.5
+Example: E0.1 S0.5 A0.5
+
+
+
+・ F
+F
+Program end command
+Forcibly stop the program.
+
+
+
+・ G
+G4 U_
+Instruction for pausing
+You can also specify a value less than or equal to a decimal point for _.
+Stops the program for the specified second.
+Example: G4 U0.2
+Stop the program for 0.2 seconds
+
+
+
+・ H
+H1
+Counter addition command
+When H1 is executed, 1 is added to the counter, and when the value specified by SET H = _ is reached, the program is terminated.
+
+H0
+Counter reset command
+Set the number of counters to 0.
+
+
+
+・ I
+I_ P_
+Measurement execution command
+_ Of I_ is the device number specified by SET I_ = COM_ and specifies 1 to 100.
+_ Of P_ specifies the numerical value of the jump destination (N_) when the measured value is out of the tolerance range.
+The measured value is acquired from the measuring instrument, and if the measured value is out of the tolerance range, it jumps to the specified destination.
+If the measured value is within the tolerance, proceed to the next line of the program.
+Example: I1 P1
+
+I_ R
+Initial value setting command (using the measuring instrument as a sensor)
+_ Of I_ is the device number specified by SET I_ = COM_ and specifies 1 to 100.
+Get the current value of the measuring instrument and set it as the initial value. When I_ C_ is executed, if the value of the measuring instrument does not change from the initial value, it jumps to the specified destination.
+Example: I1 R
+
+I C_
+Measurement execution command (using the measuring instrument as a sensor)
+_ Of I_ is the device number specified by SET I_ = COM_ and specifies 1 to 100.
+_ Of C_ specifies the numerical value of the jump destination (N_) when the measured value is out of the tolerance range.
+If the value of the measuring instrument has not changed from the initial value set by I_R, it jumps to the specified destination.
+If the value of the measuring instrument has changed from the initial value, proceed to the next line of the program.
+Example: I1 R
+
+
+
+・ J
+J_
+RCP axis positioning accuracy
+J__ specifies the RCP axis positioning accuracy value (0.01 mm unit, 0.01 mm to 9999.99 mm).
+Specify the positioning accuracy of the RCP axis (default value is 0.1 mm).
+If the margin of error is made too small, an alarm will occur due to acceleration and weight.
+Example: J0.01
+
+
+
+・ K
+K_
+XA axis movement command
+For K__, specify the movement number (0 to 63) registered with the teaching software.
+If you execute K0 after setting the movement number 0 to 100 with the teaching software, the XA axis will move to a position 100 mm from the origin.
+Example: K0
+
+
+
+・ L
+L_
+PLC selection instruction
+_ Is the device number specified by SET L_ = COM_ and specifies 1 to 100.
+Select the PLC to operate.
+Example: L1
+
+
+
+・ M
+M4 T_
+Time-out value setting instruction
+T__ sets the time to wait for the device to complete its operation (in seconds).
+If the operation of each device is not completed within the specified time, the program is stopped.
+Example: M4 T5
+
+M20
+One cycle stop command
+If M20 is loaded with ONE CYCLE checked on the screen, the program will be paused.
+
+M21
+Error detect ON instruction
+A mode that waits on the execution line of the program until the operation of the operated device is completed.
+
+M22
+Error detect OFF command
+A mode in which the program is continuously executed without waiting for the operation of the operated device to be completed. It is possible to operate each device at the same time.
+
+M99
+End of program instructions
+An instruction to return the execution line of a program to the beginning.
+
+M99 P_
+Jump instruction
+_ Of P_ specifies the numerical value of the jump destination (N_).
+Change the program execution line to the specified line (N_).
+
+M200
+Meeting order
+When error detect is OFF, it waits on the current line until the operation of all devices is completed.
+
+
+
+・ N
+N_
+Jump destination specification command
+_ Of N_ specifies an arbitrary numerical value.
+Specify the jump destination from various commands.
+Example: N1
+
+
+
+・ O
+unused
+
+
+
+・ P
+unused
+
+
+
+・ Q
+unused
+
+
+
+・ R
+R_ P_
+PLC input value confirmation command
+_ In R_ is 16 digits and specifies 0 or 1.
+_ Of P_ specifies the numerical value of the jump destination (N_) in _ of P_.
+If the specified value and the PLC input value are the same, the execution line of the program is changed to the specified line (N_).
+Cannot operate in M22 mode.
+Example: R1000 0000 0000 0000 P4
+Example: R1000000000000000 P4
+
+R_
+PLC input value confirmation command
+_ In R_ is 16 digits and specifies 0 or 1.
+The program is stopped until the specified value and the PLC input value are the same.
+Example: R1000 0000 0000 0000 P4
+Example: R1000000000000000 P4
+
+
+R_ = _ P_
+PLC specific input value confirmation command
+Specify 0 to 15 for _ in R_.
+= _ _ Specifies 0 or 1.
+_ Of P_ specifies the numerical value of the jump destination (N_) in _ of P_.
+If the leftmost value of the PLC input value (0000000000000000) is 0 and the value at the specified position is the specified value, the program execution line is changed to the specified line (N_).
+Cannot operate in M22 mode.
+Example: R0 = 0 P1
+
+R_ = _
+PLC specific input value confirmation command
+Specify 0 to 15 for _ in R_.
+= _ _ Specifies 0 or 1.
+The leftmost of the PLC input value (0000000000000000) is set to 0, and the program is stopped until the value at the specified position reaches the specified value.
+Example: R0 = 0 P1
+
+R_ P_
+PLC input value confirmation command
+_ Of R_ is 16 digits and specifies 0, 1, *, # _. * Is used when the input value of the specified bit is 0 or 1. #_ specifies a variable.
+_ Of P_ specifies the numerical value of the jump destination (N_) in _ of P_.
+Cannot operate in M22 mode.
+If the specified value and the PLC input value are the same, the execution line of the program is changed to the specified line (N_).
+Example: R # 1, *, 1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0 P4
+Example: R # 1, *, 1,0,0,0,0,0,0,0,0,0,0,0,0,0 P4
+
+R_
+PLC input value confirmation command
+_ Of R_ is 16 digits and specifies 0, 1, *, # _. * Is used when the input value of the specified bit is 0 or 1. #_ specifies a variable.
+The program is stopped until the specified value and the PLC input value are the same.
+Example: R # 1, *, 1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0 P4
+Example: R # 1, *, 1,0,0,0,0,0,0,0,0,0,0,0,0,0 P4
+
+
+
+・ S
+SET A_ = COM_
+Serial port setting command for XA axis
+_ Of SET_ specifies an arbitrary numerical value from 1 to 100.
+= COM__ specifies the corresponding serial port number.
+Set the serial port corresponding to the A_ instruction. Up to 100 units can be connected.
+Example: SET A1 = COM1
+
+SET B_ = COM_
+Serial port setting command for RCP axis
+_ Of SET_ specifies an arbitrary numerical value from 1 to 100.
+= COM__ specifies the corresponding serial port number.
+Set the serial port corresponding to the B_ instruction. Up to 100 units can be connected.
+Example: SET B1 = COM1
+
+SET H = _
+Counter number setting command
+= _ _ Specifies an arbitrary numerical value.
+Set the number of counters until the program is stopped by the H instruction.
+Example: SET H = 10
+
+SET I_ = COM_, _, _, _, _, _, _, _, _, _
+Serial port setting command for measuring instrument
+_ Of SET_ specifies an arbitrary numerical value from 1 to 100.
+= COM__ specifies the corresponding serial port number.
+After that, baud rate, byte size, parity, stop bit, measured value acquisition command, measured value acquisition start position, measured value acquisition end position, tolerance upper limit, tolerance adjustment
+Baud rate According to the setting of the measuring instrument at the communication speed.
+Byte size 5, 6, 7, 8 according to the setting of the measuring instrument.
+Follow the setting of the measuring instrument with either Parity E or N.
+Follow the setting of the measuring instrument with stop bit 1, 1.5, or 2.
+Measurement value acquisition command This is a command to acquire the measured value from the measuring instrument, and follows the setting of the measuring instrument.
+Measurement value acquisition start position: The start position of the measured value in the received character string.
+Measurement value acquisition end position: The end position of the measured value in the received character string.
+Tolerance upper limit Arbitrary tolerance upper limit
+Tolerance adjustment: Arbitrary lower limit of tolerance
+Set the serial port corresponding to the I_ instruction. Up to 100 units can be connected.
+Example: SET I1 = COM4,4800,7, E, 2,?, 0,7,0, -0.007
+
+SET L_ = COM_
+PLC axis serial port setting command
+_ Of SET_ specifies an arbitrary numerical value from 1 to 100.
+= COM__ specifies the corresponding serial port number.
+Set the serial port corresponding to the L_ instruction. Up to 100 units can be connected.
+Example: SET L1 = COM1
+
+
+
+・ T
+T_
+Manual timer command
+_ In T_ specifies a numerical value (seconds).
+If T0 is not executed within the specified time, the program will be stopped as a timeout.
+Example: T100
+Example: T0
+
+
+
+・ U
+unused
+
+
+
+・ V
+unused
+
+
+
+・ W
+W_
+PLC contact open / close command
+_ Of W_ is 8 digits and specifies 0 or 1.
+Turns the PLC contacts on and off. All contacts specified with 0 are turned off, and all contacts specified with 1 are turned on.
+Example: W1000 0000
+Example: W10000000
+
+W_ = _
+PLC specific contact open / close command
+Specify 0 to 7 for _ in W_.
+= _ _ Specifies 0 or 1.
+Turns on / off the contacts of the specified PLC. When 0 is specified, it is turned off, and when 1 is specified, it is turned on.
+Example: W0 = 0
+
+
+
+・ X
+unused
+
+
+
+・ Y
+unused
+
+
+
+・ Z
+unused
+
+
+
+・ Program sample
+SET I1=COM4,4800,7,E,2,?,0,7,0,-0.007
+SET L1=COM3
+SET A1=COM5
+SET H=10
+L1
+A1
+K0
+G4 U0.2
+K1
+
+N1
+W0000 0000
+M20
+
+N2
+R1000 0000 0000 0000 P4
+W0010 0000
+G4 U0.2
+I1 R
+W0011 0000
+G4 U0.2
+R1=1 P3
+W0011 1100
+G4 U0.3
+W0010 1100
+G4 U0.2
+W0000 0000
+G4 U0.2
+H1
+M99 P2
+
+N3
+K2
+I1 C5
+K1
+W1010 0000
+G4 U1.0
+W0010 0000
+G4 U0.5
+W0110 0000
+G4 U0.2
+W0010 0000
+G4 U1.0
+W0000 0000
+G4 U0.2
+H1
+M99 P2
+
+N4
+H0
+W1010 0000
+G4 U0.3
+W1011 0000
+G4 U0.1
+K2
+
+N5
+
+W1010 0000
+G4 U0.1
+K3
+I1 P6
+K4
+K5
+I1 P6
+K6
+K7
+I1 P6
+
+W0011 0000
+G4 U0.1
+K1
+W0111 1000
+G4 U0.3
+W0010 1000
+G4 U0.2
+W0010 0000
+M99 P1
+
+N6
+W0011 0100
+G4 U0.1
+K1
+W0111 1100
+G4 U0.3
+W0010 1100
+G4 U0.2
+W0010 0000
+M99 P1
