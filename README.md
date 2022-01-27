@@ -8,7 +8,7 @@ Easy Robot Maker
 実際に5台のロボットで24時間稼働させております。
 ノイズをカットするマルチタップを使用するのが吉かと思います。
 
-Python 2.7.1以上 PySideが必要となります。
+Python 3.7.1以上 PySideが必要となります。
 
 
 24V対応のArduino互換機(Comfile社のFA-DUINO24等)で24Vの入出力が可能（5VのArduinoも使用可能ですが、ノイズによる誤動作の可能性があります）。
