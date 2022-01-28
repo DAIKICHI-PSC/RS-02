@@ -30,7 +30,7 @@ Up to 100 devices can be connected to each device.
 
 Execute "RS02_MAIN.py".
 To run the program, load the program (text file) in "EDIT" mode and press the "RUN" button in "AUTO" mode to run it.
-See "RS-02 USERS MANUAL.txt" for instruction details. 
+See "RS-02 USERS MANUAL_EN.txt" for instruction details. 
 
 
 RS-02は、P検査機や簡易的なロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
