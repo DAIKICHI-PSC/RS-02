@@ -2,7 +2,7 @@
 Easy Robot Maker
 
 
-RS-02 is software that can control inspection machines and simple robots with CNC-like programs without using PLC.
+RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.
 Interrupts and asynchronous processing are not supported.
 
 I couldn't devote more time to development, so I released it.
@@ -35,7 +35,7 @@ To run the program, load the program (text file) in "EDIT" mode and press the "R
 See "RS-02 USERS MANUAL.docx" for instruction details. 
 
 
-RS-02は、P検査機や簡易的なロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
+RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
 
 これ以上開発に時間が割けなくなったので、公開しました。
