@@ -2,24 +2,38 @@
 Easy Robot Maker
 
 
-IT IS SOFTWARE THAT CAN CONTROL INSPECTION MACHINES AND SIMPLE ROBOTS WITH CNC-LIKE PROGRAMS. INTERRUPTS AND ASYNCHRONOUS PROCESSING ARE NOT SUPPORTED.
+RS-02 is software that can control inspection machines and simple robots with CNC-like programs without using PLC.
+Interrupts and asynchronous processing are not supported.
 
-I COULDN'T SPEND ANY MORE TIME DEVELOPING IT, SO I MADE IT PUBLIC. IN FACT, FIVE ROBOTS OPERATE 24 HOURS A DAY. I THINK IT'S GOOD TO USE MULTI-TAP TO CUT NOISE.
+I couldn't devote more time to development, so I released it.
+We are actually operating 5 robots 24 hours a day.
+I think it's good to use a multi-tap that cuts noise.
 
-PYTHON 3.7.1 OR HIGHER AND PYSIDE2 ARE REQUIRED. MAYBE THERE ARE OTHER LIBRARIES YOU NEED. INSTALL IF NECESSARY.
-
-24V I/O IS POSSIBLE WITH 24V ARDUINO COMPATIBLE DEVICES (SUCH AS COMFILE'S FA-DUINO24) (5V ARDUINO IS ALSO AVAILABLE, BUT THERE IS A POSSIBILITY OF MALFUNCTION DUE TO NOISE). DEPENDING ON THE MODEL, CHANGE THE PORT START NUMBER AND NUMBER OF PORTS OF THE FIRMWARE "PLC-01.INO". DEPENDING ON THE INPUT VALUE, YOU CAN BRANCH PROGRAM PROCESSING.
-
-COMPATIBLE WITH SUS'S XA SERIES OF SINGLE-AXIS ROBOTS (TEACHING ONLY). COMPATIBLE WITH IAI'S RCP SERIES OF SINGLE-AXIS ROBOTS (POSITIONING ONLY). ASYNCHRONOUS OPERATION OF MULTIPLE AXES IS POSSIBLE.
-
-COMPATIBLE WITH MEASURING INSTRUMENTS THAT CAN RECEIVE READINGS WITH RS232C. BY SPECIFYING THE TOLERANCE RANGE, YOU CAN BRANCH THE PROGRAM PROCESSING BY DETERMINING OK AND NG.
-
-EACH DEVICE CAN BE CONNECTED TO UP TO 100 UNITS EACH.
-
-RUN "RS02_MAIN.PY". TO MAKE THE PROGRAM WORK, READ THE PROGRAM (TEXT FILE) IN "EDIT" MODE AND PRESS THE "RUN" BUTTON IN "AUTO" MODE TO RUN IT. FOR MORE INFORMATION ABOUT THE INSTRUCTION, SEE RS-02 USERS MANUAL_EN.txt.
+Requires Python 3.7.1 or higher and PySide2.
+Maybe there are other libraries you need.
+Please install if necessary.
 
 
-検査機や簡易的なロボットを、ＣＮＣライクなプログラムで制御出来るソフトウェアです。
+24V compatible Arduino compatible machine (Comfile's FA-DUINO24 etc.) can input / output 24V (5V Arduino can also be used, but there is a possibility of malfunction due to noise).
+Change the port start number and the number of ports of the firmware "PLC-01.ino" depending on the model.
+Depending on the input value, the program processing can be branched.
+
+Compatible with SUS's single-axis robot XA series (teaching only).
+Compatible with IAI's single-axis robot RCP series (position specification only).
+Asynchronous operation of multiple axes is possible.
+
+Compatible with measuring instruments that can receive measured values with RS232C.
+By specifying the tolerance range and judging OK and NG, the program processing can be branched.
+
+Up to 100 devices can be connected to each device.
+
+
+Execute "RS02_MAIN.py".
+To run the program, load the program (text file) in "EDIT" mode and press the "RUN" button in "AUTO" mode to run it.
+See "RS-02 USERS MANUAL.txt" for instruction details. 
+
+
+RS-02は、P検査機や簡易的なロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
 
 これ以上開発に時間が割けなくなったので、公開しました。
