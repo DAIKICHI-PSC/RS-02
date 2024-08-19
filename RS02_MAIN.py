@@ -7,7 +7,7 @@ import threading
 import re
 import serial
 import serial.tools.list_ports
-from PySide2 import QtCore, QtGui, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
 from RS02_GUI import Ui_MainWindow #QT Designerで作成し変換したファイルの読込
 
 from MODBUS_ASCII_LRC import LRC_CREATE, LRC_CHECK
@@ -124,6 +124,7 @@ def RUN_RS():
     global H_FAIL_COUNTER
     global MOVE_TIME_OUT
     global RCP_POS_DIFF
+    global NG_VAL
 
     DICT_MACHINE_WORK_STAT.clear()
     DICT_MACHINE_FIN_STAT.clear()
@@ -823,6 +824,12 @@ def RUN_RS():
             #####
 
 
+            #========================================コマンドQ用========================================
+            elif(PText.startswith("Q") == True):
+                Nc_Program.append(["Q"])
+            #####
+
+
             #========================================コマンドR用========================================
             elif(PText.startswith("R") == True):
                 if((" P" in PText) == True):
@@ -1430,6 +1437,14 @@ def RUN_RS():
                         AOTO_MODE_STAT = 2
                 elif(Nc_Program[Current_Line_Number][1] =="4"):
                     MOVE_TIME_OUT = str(Nc_Program[Current_Line_Number][2])
+            #####
+
+
+            #========================================コマンドQ用========================================
+            elif(Nc_Program[Current_Line_Number][0] =="Q"):
+                WConsole("NG")
+                NG_VAL = NG_VAL + 1
+                win.ui.lineEdit_5.setText(str(NG_VAL))
             #####
 
 

@@ -224,7 +224,11 @@ unused
 
 
 ・ Q
-unused
+Q
+NG counter addition order
+Describe without numerical values.
+Add 1 to the NG counter.
+Example: Q
 
 
 
