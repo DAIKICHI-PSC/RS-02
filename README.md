@@ -6,10 +6,10 @@ RS-02 is software that can control inspection machines and robots with CNC-like 
 Interrupts and asynchronous processing are not supported.
 
 I couldn't devote more time to development, so I released it.
-We are actually operating 5 robots 24 hours a day.
+We are actually operating 6 robots 24 hours a day.
 I think it's good to use a multi-tap that cuts noise.
 
-Requires Python 3.7.1 or higher and PySide2.
+Requires Python 3.7.1 or higher and PySide6.
 Maybe there are other libraries you need.
 Please install if necessary.
 
@@ -35,14 +35,19 @@ To run the program, load the program (text file) in "EDIT" mode and press the "R
 See "RS-02 USERS MANUAL.docx" for instruction details. 
 
 
+2024/8/19 Use nuitka to make RS-02 faster.
+
+nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
+
+
 RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
 
 これ以上開発に時間が割けなくなったので、公開しました。
-実際に5台のロボットで24時間稼働させております。
+実際に6台のロボットで24時間稼働させております。
 ノイズをカットするマルチタップを使用するのが吉かと思います。
 
-Python 3.7.1以上とPySide2が必要となります。
+Python 3.7.1以上とPySide6が必要となります。
 もしかしたら、他に必要なライブラリがあるかもしれません。
 必要に応じてインストールして下さい。
 
@@ -66,3 +71,8 @@ RS232Cで測定値が受け取れる測定器に対応。
 「RS02_MAIN.py」を実行して下さい。
 プログラムを動作させるには、「EDIT」モードでプログラム(テキストファイル)を読み込み、「AUTO」モードで「RUN」ボタンを押して実行します。
 命令の詳細は「RS-02 USERS MANUAL.docx」を参照してください。
+
+
+2024/8/19 nuitkaを使用するとRS-02を高速に動作させる事が可能です。
+
+nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
