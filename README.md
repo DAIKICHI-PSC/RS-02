@@ -39,6 +39,9 @@ See "RS-02 USERS MANUAL.docx" for instruction details.
 
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
 
+2024/9/10 Compatible with Keigan's KM-1U.
+
+
 
 RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
@@ -76,3 +79,5 @@ RS232Cで測定値が受け取れる測定器に対応。
 2024/8/19 nuitkaを使用するとRS-02を高速に動作させる事が可能です。
 
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
+
+2024/9/10 Keigan社のKM-1Uに対応しました。
