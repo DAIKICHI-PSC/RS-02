@@ -884,6 +884,7 @@ def RUN_RS():
             #========================================Pコマンド用========================================
             #PText = win.ui.plainTextEdit_1.document().findBlockByLineNumber(Current_Line_Number).text() #####PTextにplainTextEdit_1の指定行を代入
             elif(PText.startswith("P") == True):
+                PText = PText.replace(" ", "")
                 Nc_Command, Nc_Command2 = PText.split("S")
                 Nc_Command = Nc_Command.replace("P", "") #####Nc_Commandの文字列から"P"を削除
                 Nc_Command2, Nc_Command3 = Nc_Command2.split("C")
@@ -2561,7 +2562,7 @@ def OConnect(KM_Comport, Nc_val):
         WConsole("ERROR : KM-1U connection error.")
     return ret
 #####
-#
+
 
 
 
@@ -2830,7 +2831,7 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
             f.close()
             msgbox = QtWidgets.QMessageBox(self) #####メッセージボックスを準備
             msgbox.setText("FILE : Saved.") #####メッセージボックスのテキストを設定
-            ret = msgbox.exec_() #####メッセージボックスを表示
+            ret = msgbox.exec() #####メッセージボックスを表示
             #####
     #####
     #-----pushButton17用イベント処理----------------------------------------

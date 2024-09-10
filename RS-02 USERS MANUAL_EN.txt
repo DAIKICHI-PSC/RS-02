@@ -224,13 +224,13 @@ Example: O1
 
 
 ・P
-P_S_C_
+P_ S_ C_
 KM-1U relative rotation command
 P_ specifies the rotation angle.
 S_ specifies the speed (0 to 260).
 C_ specifies the acceleration/deceleration curve (0 or 1).
 Rotates the specified angle from the current position at the specified speed and acceleration/deceleration curve.
-Example: P-360S10C0
+Example: P-360 S10 C0
 
 
 
