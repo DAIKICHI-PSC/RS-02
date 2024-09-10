@@ -10,6 +10,9 @@ import serial.tools.list_ports
 from PySide6 import QtCore, QtGui, QtWidgets
 from RS02_GUI import Ui_MainWindow #QT Designerで作成し変換したファイルの読込
 
+from pykeigan import usbcontroller
+from pykeigan import utils
+
 from MODBUS_ASCII_LRC import LRC_CREATE, LRC_CHECK
 from MODBUS_ASCII_CONVERTERS import DECIMAL_TO_HEX, RESPONSE_TO_BYTES
 #from VALUE_CHECKER import DIGIT_CHK
@@ -68,6 +71,11 @@ for i in range(0, 101):
 LIST_RCP = []
 for i in range(0, 101):
     LIST_RCP.append(serial.Serial)
+#####
+#####KM-1U用にシリアル通信関数を配列化
+LIST_KM = []
+for i in range(0, 101):
+    LIST_KM.append(usbcontroller.USBController)
 #####
 
 
@@ -136,8 +144,9 @@ def RUN_RS():
     Nc_val = "" #####命令値一時格納用
     #selectedDobot = -1 #####選択されたＤｏｂｏｔ名格納用
     SelectedPLC = -1 #####選択されたPLC名格納用
-    SelectedXA = -1 #####選択されたXA名格納用    
-    SelectedRCP = -1 #####選択されたRCP名格納用 
+    SelectedXA = -1 #####選択されたXA名格納用  
+    SelectedRCP = -1 #####選択されたRCP名格納用
+    SelectedKM = -1 #####選択されたKM-1U名格納用
 
     FeedRate = 10
     Timer = 0
@@ -437,6 +446,44 @@ def RUN_RS():
                         if(Debug_Mode == 1): #<<<<<<<<<<<<<<<<<<<<デバッグモードの場合>>>>>>>>>>>>>>>>>>>>
                             WConsole("SET :" +  Nc_Command + " is " + Nc_val + ".")
                         ret = LConnect(Nc_val, Dict_Machine_Name_Num[Nc_Command])
+                        if(ret > 0):
+                            break
+                        else:
+                            if(Debug_Mode == 1): #<<<<<<<<<<<<<<<<<<<<デバッグモードの場合>>>>>>>>>>>>>>>>>>>>
+                                WConsole("CONNECTION : " + Nc_Command + " through " + Nc_val + " succeed.")
+                            time.sleep(0.1)
+                else:
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need = for SET command.")
+                    break
+            #####
+
+
+            #========================================Oコマンド用　KM-1Uの設定========================================
+            elif(PText.startswith("O") == True): #####PTextの文字列の先頭が"O"で始まるか確認
+                if(("=" in PText) == True): #####PTextの文字列に"="が含まれるか確認
+                    Nc_Command, Nc_val = PText.split("=") #####PTextの文字列を"="で分割し、Nc_CommandとNc_valに代入
+                    Machine_Number = Nc_Command.replace("O", "") #####命令の数字部分のみを取得
+                    Serial_Number = Check_Serial() #####存在するシリアルポートを取得
+                    if(Nc_val == ""): #####Nc_valに値があるか確認
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number or value.")
+                        break
+                    elif(Machine_Number.isdigit() == False):
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number.")
+                        break
+                    elif(int(Machine_Number) > 100):
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Number should be under 100.")
+                        break
+                    elif((Nc_val in Serial_Number) == False): #####実際のシリアルポート名にマッチするか確認
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Serial port not found.")
+                        break
+                    else:
+                        Dict_Machine_Name_Num[Nc_Command] = int(Machine_Number) #####辞書にOコマンドと配列番号を登録
+                        #DSerial[Nc_Command] = Nc_val #####辞書に登録
+                        DICT_MACHINE_WORK_STAT[Nc_Command] = 0 #####辞書にOコマンドと実行結果を登録
+                        DICT_MACHINE_FIN_STAT[Nc_Command] = 0 #####辞書にOコマンドと動作状況を登録
+                        if(Debug_Mode == 1): #<<<<<<<<<<<<<<<<<<<<デバッグモードの場合>>>>>>>>>>>>>>>>>>>>
+                            WConsole("SET :" +  Nc_Command + " is " + Nc_val + ".")
+                        ret = OConnect(Nc_val, Dict_Machine_Name_Num[Nc_Command])
                         if(ret > 0):
                             break
                         else:
@@ -784,7 +831,7 @@ def RUN_RS():
                     WConsole("ERROR LINE " + str(Current_Line_Number) + " : PLC not found.")
                     break
                 else:
-                    Nc_Program.append(["L", int(PText.replace("L", ""))]) #####Aと番号をリストに追加
+                    Nc_Program.append(["L", int(PText.replace("L", ""))]) #####Lと番号をリストに追加
             #####
 
 
@@ -823,6 +870,36 @@ def RUN_RS():
                 Nc_Program.append(["M", "4", Value])
             #####
 
+
+            #========================================Oコマンド用========================================
+            elif(PText.startswith("O") == True):
+                if((PText in Dict_Machine_Name_Num) != True):
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : KM-1U not found.")
+                    break
+                else:
+                    Nc_Program.append(["O", int(PText.replace("O", ""))]) #####Oと番号をリストに追加
+            #####
+
+
+            #========================================Pコマンド用========================================
+            #PText = win.ui.plainTextEdit_1.document().findBlockByLineNumber(Current_Line_Number).text() #####PTextにplainTextEdit_1の指定行を代入
+            elif(PText.startswith("P") == True):
+                Nc_Command, Nc_Command2 = PText.split("S")
+                Nc_Command = Nc_Command.replace("P", "") #####Nc_Commandの文字列から"P"を削除
+                Nc_Command2, Nc_Command3 = Nc_Command2.split("C")
+                #Nc_Command2 = Nc_Command2.replace("S", "") #####Nc_Commandの文字列から"S"を削除
+                tmp = Nc_Command.replace("-", "")
+                if(tmp.isdigit() == False):
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number.")
+                    break
+                if(Nc_Command2.isdigit() == False):
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number.")
+                    break
+                if(Nc_Command3 != "0" and Nc_Command3 != "1"):
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : Must be 0 or 1.")
+                    break
+                Nc_Program.append(["P", Nc_Command, Nc_Command2, Nc_Command3])
+            #####
 
             #========================================コマンドQ用========================================
             elif(PText.startswith("Q") == True):
@@ -1440,6 +1517,23 @@ def RUN_RS():
             #####
 
 
+            #========================================コマンドO用========================================
+            elif(Nc_Program[Current_Line_Number][0] =="O"):
+                SelectedKM = Nc_Program[Current_Line_Number][1]
+            #####
+
+            #========================================コマンドP用========================================
+            elif(Nc_Program[Current_Line_Number][0] =="P"):
+                Current_Km = SelectedKM #####現在選択されているPLCを記憶（マルチスレッド時のタイミング用）
+                if(Current_Km == -1): #####KM-1Uが選択されているか確認
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : KM-1U not selected.")
+                    break
+                LIST_KM[Current_Km].set_curve_type(int(Nc_Program[Current_Line_Number][3]))
+                LIST_KM[Current_Km].set_speed(utils.rpm2rad_per_sec(int(Nc_Program[Current_Line_Number][2]))) #rpm-> rad/sec
+                LIST_KM[Current_Km].move_by_dist(utils.deg2rad(int(Nc_Program[Current_Line_Number][1])),None) #Degree-> rad
+            #####
+
+
             #========================================コマンドQ用========================================
             elif(Nc_Program[Current_Line_Number][0] =="Q"):
                 WConsole("NG")
@@ -1773,6 +1867,17 @@ def RUN_RS():
         #####
     except:
         WConsole("WRNING : Error disconnecting from RCP.")
+
+    try:
+        for i in DKeys:
+            if(i.startswith("O") == True):
+                LIST_KM[Dict_Machine_Name_Num[i]].disable_action()
+                LIST_KM[Dict_Machine_Name_Num[i]].disconnect()
+                del LIST_KM[Dict_Machine_Name_Num[i]]
+                #LIST_KM[Dict_Machine_Name_Num[i]].finish_auto_serial_reading()
+        #####
+    except:
+        WConsole("WRNING : Error disconnecting from KM-1U.")
     win.ui.pushButton_1.setEnabled(True)
     win.ui.pushButton_2.setEnabled(False)
     win.ui.groupBox_1.setEnabled(True)
@@ -2439,6 +2544,45 @@ def BMove(Thread_Name_Num):
 
 ######################################################################################
 ######################################################################################
+#####################################KM-1U用種関数######################################
+######################################################################################
+######################################################################################
+#####KM-1U通信開始用関数
+def OConnect(KM_Comport, Nc_val):
+    global LIST_KM
+    try:
+        LIST_KM[Nc_val] = usbcontroller.USBController(KM_Comport, False)#, 115200, False)
+        #LIST_KM[Nc_val].start_auto_serial_reading()
+        #LIST_KM[Nc_val].connect()
+        LIST_KM[Nc_val].enable_action()
+        ret = 0
+    except:
+        ret = 1
+        WConsole("ERROR : KM-1U connection error.")
+    return ret
+#####
+#
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######################################################################################
+######################################################################################
 ###################################PySide2用種関数####################################
 ######################################################################################
 ######################################################################################
@@ -2817,4 +2961,4 @@ if __name__ == '__main__':
     app = QtWidgets.QApplication(sys.argv)
     win = MainWindow1()
     win.show() #win.showFullScreen() win.showEvent()
-    sys.exit(app.exec_())
+    sys.exit(app.exec())

@@ -213,13 +213,24 @@ Example: N1
 
 
 
-・ O
-unused
+
+・O
+O_
+KM-1U axis selection command
+_ is the device number specified with SET A_=COM_, and specifies 1 to 100.
+Select KM-1U to operate with O_ command.
+Example: O1
 
 
 
-・ P
-unused
+・P
+P_S_C_
+KM-1U relative rotation command
+P_ specifies the rotation angle.
+S_ specifies the speed (0 to 260).
+C_ specifies the acceleration/deceleration curve (0 or 1).
+Rotates the specified angle from the current position at the specified speed and acceleration/deceleration curve.
+Example: P-360S10C0
 
 
 
