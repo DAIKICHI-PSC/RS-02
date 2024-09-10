@@ -40,6 +40,9 @@ See "RS-02 USERS MANUAL.docx" for instruction details.
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
 
 2024/9/10 Compatible with Keigan's KM-1U.
+The thread will not terminate unless you change print("stop auto_serial_reading") to break in pykeigan's usbcontroller.py.
+
+
 
 
 
@@ -81,3 +84,4 @@ RS232Cで測定値が受け取れる測定器に対応。
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
 
 2024/9/10 Keigan社のKM-1Uに対応しました。
+pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreakに変更しないと、スレッドが終了しません。
