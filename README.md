@@ -42,6 +42,7 @@ nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside
 2024/9/10 Compatible with Keigan's KM-1U.
 The thread will not terminate unless you change print("stop auto_serial_reading") to break in pykeigan's usbcontroller.py.
 
+2025/3/10 Added virtual parallel processing. In addition to the program from the beginning, you can also virtually execute programs from the specified N number in parallel.
 
 
 
@@ -85,3 +86,6 @@ nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside
 
 2024/9/10 Keigan社のKM-1Uに対応しました。
 pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreakに変更しないと、スレッドが終了しません。
+
+2025/3/10 仮想並列処理を追加しました。先頭からのプログラムに加えて、指定したN番号からもプログラムを仮想的に並列実行出来ます。
+
