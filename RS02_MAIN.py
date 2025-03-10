@@ -1,5 +1,13 @@
 #-*- coding: utf-8 -*-
 
+
+#####2025/3/10 Display option of virtual paralell processing added
+#####Refer to comment CNG2
+
+#####2025/3/7 Virtual paralell processing added
+#####Refer to comment CNG1
+
+
 import os
 import sys
 import time
@@ -114,11 +122,11 @@ Debug_Mode = 0 #####デバッグモード用フラグ
 
 
 
-##################################################################################
-##################################################################################
-#################################メインループ処理##################################
-##################################################################################
-##################################################################################
+####################################################################################################################################################################
+####################################################################################################################################################################
+#################################メインループ処理####################################################################################################################
+####################################################################################################################################################################
+####################################################################################################################################################################
 #####関数########################################
 #####AUTOモード用関数
 def RUN_RS():
@@ -148,7 +156,17 @@ def RUN_RS():
     SelectedRCP = -1 #####選択されたRCP名格納用
     SelectedKM = -1 #####選択されたKM-1U名格納用
 
-    FeedRate = 10
+    #CNG1_2
+    VirtualValue = [[0, -1, -1, -1, -1]] #仮想並列処理の各値 [[Current_Line_Number, SelectedPLC, SelectedXA, SelectedRCP, SelectedKM], []]
+    VirtualNum = 0 #仮想並列処理の総数
+    VirtualCurrentNum = 0 #仮想並列処理の現在の処理番号
+    #CNG1_2
+
+    #CNG2_1
+    VirtualDisplay = -1
+    #CNG2_1
+
+    #FeedRate = 10
     Timer = 0
     TimeOut = 0
     ElapsedTime = 0
@@ -364,6 +382,9 @@ def RUN_RS():
                     if(Nc_val == ""): #####Nc_valに値があるか確認
                         WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number or value.")
                         break
+                    elif(Machine_Number.isdigit() == False):
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number.")
+                        break
                     elif(int(Machine_Number) > 100):
                         WConsole("ERROR LINE " + str(Current_Line_Number) + " : Number should be under 100.")
                         break
@@ -418,6 +439,48 @@ def RUN_RS():
                     WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need = for SET command.")
                     break
             #####
+
+
+            #CNG1_3
+            #========================================Vコマンド用　仮想並列処理の設定========================================
+            elif(PText.startswith("V") == True): #####PTextの文字列の先頭が"V"で始まるか確認
+                if(("=" in PText) == True): #####PTextの文字列に"="が含まれるか確認
+                    Nc_Command, Nc_val = PText.split("=") #####PTextの文字列を"="で分割し、Nc_CommandとNc_valに代入
+                    #CNG2_2
+                    Machine_Number = Nc_Command.replace("V", "") #####命令の数字部分のみを取得
+                    Machine_Number_B = Machine_Number.replace("-", "") #####命令の数字部分のみを取得
+                    if(Nc_val == ""): #####Nc_valに値があるか確認
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number or value.")
+                        break
+                    elif(Machine_Number_B.isdigit() == False):
+                        WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number.")
+                        break
+                    else:
+                        VirtualDisplay = int(Machine_Number)
+                        v = Nc_val.split(',')
+                        v_len = len(v)
+                        if(VirtualDisplay > v_len):
+                            WConsole("ERROR LINE " + str(Current_Line_Number) + " : Value of V is too big.")
+                            break
+                        elif(VirtualDisplay < -1):
+                            WConsole("ERROR LINE " + str(Current_Line_Number) + " : Value of V is too small.")
+                            break
+                            #CNG2_2
+                        for i in v:
+                            if(("N" in i) == False):
+                                WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need N value.")
+                                break
+                            l = i.replace("N", "")
+                            if(l.isdigit() == False):
+                                WConsole("ERROR : Need digit after N.")
+                                break
+                            i = i.replace("N", "P")
+                            VirtualValue.append([i, -1, -1, -1, -1])
+                else:
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need = for SET command.")
+                    break
+            #####
+            #CNG1_3
 
 
             #========================================Lコマンド用　PLCの設定========================================
@@ -1077,13 +1140,36 @@ def RUN_RS():
     ######################################################################################
     if(isError == 0):
         Total_Line_Number = win.ui.plainTextEdit_1.blockCount() #####plainTextEdit_1の行数を取得
-        Current_Line_Number = 0
+
+        #####仮想並列処理のN番号を取得
+        #CNG1_4
+        VirtualNum = len(VirtualValue)
+        for i, l in enumerate(VirtualValue):
+            if i > 0:
+                if((l[0] in Dict_Jump_Distination_Num) == False):
+                    WConsole("ERROR LINE " + str(Current_Line_Number) + " : " + i[0] + " number not found.")
+                    break
+                VirtualValue[i][0] = Dict_Jump_Distination_Num[l[0]]
+ 
         while(True):
 
+            #####現在の仮想並列処理のパラメータを取得
+            Current_Line_Number = VirtualValue[VirtualCurrentNum][0]
+            SelectedPLC = VirtualValue[VirtualCurrentNum][1]
+            SelectedXA = VirtualValue[VirtualCurrentNum][2]
+            SelectedRCP = VirtualValue[VirtualCurrentNum][3]
+            SelectedKM = VirtualValue[VirtualCurrentNum][4]
+            #CNG1_4
+
             #####指定行を取得
-            PText = win.ui.plainTextEdit_1.document().findBlockByLineNumber(Current_Line_Number).text() #####PTextにplainTextEdit_1の指定行を代入
+            #CNG2_3
+            #PText = win.ui.plainTextEdit_1.document().findBlockByLineNumber(Current_Line_Number).text() #####PTextにplainTextEdit_1の指定行を代入
             win.ui.plainTextEdit_1.moveCursor(QtGui.QTextCursor.End) #####指定した行へ移動
-            cursor = QtGui.QTextCursor(win.ui.plainTextEdit_1.document().findBlockByLineNumber(Current_Line_Number)) #####指定した行へ移動
+            if VirtualDisplay > -1:
+                cursor = QtGui.QTextCursor(win.ui.plainTextEdit_1.document().findBlockByLineNumber(VirtualValue[VirtualDisplay][0])) #####指定した行へ移動
+            else:
+                cursor = QtGui.QTextCursor(win.ui.plainTextEdit_1.document().findBlockByLineNumber(Current_Line_Number)) #####指定した行へ移動
+                #CNG2_3
             win.ui.plainTextEdit_1.setTextCursor(cursor) #####指定した行へ移動
             cursor = win.ui.plainTextEdit_1.textCursor() #####選択範囲をハイライト表示する
             cursor.movePosition(QtGui.QTextCursor.EndOfBlock, QtGui.QTextCursor.KeepAnchor, 1) #####選択範囲をハイライト表示する
@@ -1474,14 +1560,14 @@ def RUN_RS():
             #========================================コマンドM用========================================
             elif(Nc_Program[Current_Line_Number][0] =="M"):
                 if(Nc_Program[Current_Line_Number][1] =="200"):
-                    while(True):
-                        l = 0
-                        DKeys = DICT_MACHINE_WORK_STAT.keys()
-                        for i in DKeys:
-                            l = l + DICT_MACHINE_WORK_STAT[i]
-                        if(l == 0): #####全ての機器が動作完了しているか確認(動作している場合はlが0より大きくなる)
-                            break
-                        app.processEvents() #####ループ中もプロセスが動作する様にする
+                    #CNG1_1
+                    l = 0
+                    DKeys = DICT_MACHINE_WORK_STAT.keys()
+                    for i in DKeys:
+                        l = l + DICT_MACHINE_WORK_STAT[i]
+                    if(l > 0): #####全ての機器が動作完了しているか確認(動作している場合はlが0より大きくなる)
+                        Current_Line_Number = Current_Line_Number -1 #動作が完了してない場合は再度M200の確認をする様にする
+                    #CNG1_1
                     l = 0
                     DKeys = DICT_MACHINE_FIN_STAT.keys()
                     for i in DKeys:
@@ -1801,6 +1887,18 @@ def RUN_RS():
             if(Current_Line_Number == Total_Line_Number): #####最終行まで来たら実行終了
                 WConsole(">Program ended.")
                 break
+
+            #####次の仮想並列処理に移行
+            #CNG1_5
+            VirtualValue[VirtualCurrentNum][0] = Current_Line_Number
+            VirtualValue[VirtualCurrentNum][1] = SelectedPLC
+            VirtualValue[VirtualCurrentNum][2] = SelectedXA
+            VirtualValue[VirtualCurrentNum][3] = SelectedRCP
+            VirtualValue[VirtualCurrentNum][4] = SelectedKM
+            VirtualCurrentNum += 1
+            if VirtualCurrentNum == VirtualNum:
+                VirtualCurrentNum = 0
+            #CNG1_5
             
             if(AOTO_MODE_STAT == 2): #####シングルブロックがオンの場合ループする
                 win.ui.pushButton_1.setEnabled(True)
