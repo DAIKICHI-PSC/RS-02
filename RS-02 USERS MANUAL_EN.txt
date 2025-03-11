@@ -260,7 +260,7 @@ R_
 PLC input value confirmation command
 The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when the input value of the specified bit can be either 0 or 1. #_ specifies a variable.
 The program will stop until the specified value is the same as the PLC input value.
-completion confirmed with M200.
+Check completion with M200.
 Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0,0, 0,0,0,0
 Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
