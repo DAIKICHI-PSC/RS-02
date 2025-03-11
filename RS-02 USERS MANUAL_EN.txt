@@ -225,9 +225,10 @@ Example: R1000000000000000 P4
 R_
 PLC input value confirmation command
 The _ in R_ is 16 digits and specifies 0 or 1.
-The program will stop until the specified value and the PLC input value are the same.
-Example: R1000 0000 0000 0000 P4
-Example: R1000000000000000 P4
+The program stops until the specified value and the PLC input value are the same.
+Check completion with M200.
+Example: R1000 0000 0000 0000
+Example: R1000000000000000
 
 R_=_ P_
 PLC specific input value confirmation command
@@ -235,15 +236,16 @@ The _ in R_ specifies 0 to 15.
 The _ in =_ specifies 0 or 1.
 The _ in P_ specifies the value of the jump destination (N_).
 The leftmost PLC input value (00000000000000000) is set to 0, and if the value at the specified position is the specified value, the execution line of the program is changed to the specified line (N_).
-Cannot be operated in M22 mode.
+Not compatible with M22 mode.
 Example: R0=0 P1
 
 R_=_
 PLC specific input value confirmation command
 The _ in R_ specifies 0 to 15.
 The _ in =_ specifies 0 or 1.
-The leftmost PLC input value (00000000000000000) is set to 0, and the program stops until the value at the specified position becomes the specified value.
-Example: R0=0 P1
+The leftmost PLC input value (00000000000000000) is set to 0, and the program stops until the value at the specified position is the specified value.
+Check completion with M200.
+Example: R0=0
 
 R_ P_
 PLC input value confirmation command
@@ -251,18 +253,16 @@ The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when it does not ma
 The _ in P_ specifies the value of the jump destination (N_).
 Cannot be operated in M22 mode.
 If the specified value is the same as the PLC input value, the program execution line will change to the specified line (N_).
-
 Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0,0, 0,0,0,0 P4
-
 Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 P4
 
 R_
 PLC input value confirmation command
 The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when the input value of the specified bit can be either 0 or 1. #_ specifies a variable.
-
 The program will stop until the specified value is the same as the PLC input value.
-Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0,0, 0,0,0,0 P4
-Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 P4
+completion confirmed with M200.
+Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0,0, 0,0,0,0
+Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 ・S
 SET A_=COM_
@@ -320,10 +320,10 @@ Example: SET O1=COM1
 
 SET V_=_
 Virtual parallel processing setting command
-The _ in SET V_ specifies the program to display. -1 displays all programs as they are executed, and 0 displays only the processing from the beginning. From 1 onwards, only the processing of the specified N number is displayed (the specified N number is 1, 2, 3, and so on).
-The _ in =_ sets the N number at which virtual parallel processing begins.
-By alternating processing starting from multiple N numbers in parallel with processing from the beginning of the program, virtual parallel processing is performed.
-In some cases, it may be necessary to use M22 and M200 to prevent parallel processing from stopping.
+The _ in SET V_ specifies the program to display. -1 displays all programs for each execution, and 0 displays only the processing from the beginning. From 1 onwards, only the processing of the specified N number is displayed (the specified N number order is 1, 2, 3, and so on).
+The _ in =_ sets the N number at which virtual parallel processing starts.
+By alternating processing starting from multiple N numbers in parallel with processing from the beginning of the program, virtually parallel processing is performed.
+In some cases, it is necessary to use M22 and M200 to prevent parallel processing from stopping.
 Example: SET V-1=N100,N200,N300
 Example: SET V3=N100,N200,N300
 
