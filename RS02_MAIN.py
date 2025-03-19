@@ -1,10 +1,15 @@
 #-*- coding: utf-8 -*-
 
+#####2025/3/19 Changed so that M21 and M22 can work properly for each virtual paralell process
+#####Refer to comment CNG4
 
-#####2025/3/10 Display option of virtual paralell processing added
+#####2025/3/11 Changed so that M200 can operate in each virtual paralell process
+#####Refer to comment CNG3
+
+#####2025/3/10 Display option of virtual paralell process added
 #####Refer to comment CNG2
 
-#####2025/3/7 Virtual paralell processing added
+#####2025/3/7 Virtual paralell process added
 #####Refer to comment CNG1
 
 
@@ -157,7 +162,9 @@ def RUN_RS():
     SelectedKM = -1 #####選択されたKM-1U名格納用
 
     #CNG1_2
-    VirtualValue = [[0, -1, -1, -1, -1]] #仮想並列処理の各値 [[Current_Line_Number, SelectedPLC, SelectedXA, SelectedRCP, SelectedKM], []]
+    #CNG4_1
+    VirtualValue = [[0, -1, -1, -1, -1, 1]] #仮想並列処理の各値 [[Current_Line_Number, SelectedPLC, SelectedXA, SelectedRCP, SelectedKM, ERROR_DETECT], []]
+    #CNG4_1
     VirtualNum = 0 #仮想並列処理の総数
     VirtualCurrentNum = 0 #仮想並列処理の現在の処理番号
     #CNG1_2
@@ -165,6 +172,10 @@ def RUN_RS():
     #CNG2_1
     VirtualDisplay = -1
     #CNG2_1
+
+    #CNG3_1
+    VirtualMachine = [[]] #各仮想並列処理で受け持つ機器を登録し、M200で受け持つ機器のみを確認（各処理のM200でクリア）
+    #CNG3_1
 
     #FeedRate = 10
     Timer = 0
@@ -475,7 +486,12 @@ def RUN_RS():
                                 WConsole("ERROR : Need digit after N.")
                                 break
                             i = i.replace("N", "P")
-                            VirtualValue.append([i, -1, -1, -1, -1])
+                            #CNG4_4
+                            VirtualValue.append([i, -1, -1, -1, -1, 1])
+                            #CNG4_4
+                            #CNG3_2
+                            VirtualMachine.append([])
+                            #CNG3_2
                 else:
                     WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need = for SET command.")
                     break
@@ -1159,6 +1175,9 @@ def RUN_RS():
             SelectedXA = VirtualValue[VirtualCurrentNum][2]
             SelectedRCP = VirtualValue[VirtualCurrentNum][3]
             SelectedKM = VirtualValue[VirtualCurrentNum][4]
+            #CNG4_2
+            ERROR_DETECT = VirtualValue[VirtualCurrentNum][5]
+            #CNG4_2
             #CNG1_4
 
             #####指定行を取得
@@ -1426,6 +1445,9 @@ def RUN_RS():
                         WConsole("ERROR LINE " + str(Current_Line_Number) + " : Communication error.")
                         break
                     if(ERROR_DETECT == 0):
+                        #CNG3_3
+                        VirtualMachine[VirtualCurrentNum].append("B" + str(Current_RCP)) #仮想並列処理で使用する機器を登録
+                        #CNG3_3
                         Thread = threading.Thread(target = BMove ,args=(Current_RCP,))
                         Thread.start() #####完了処理はM200で行う
                     else:
@@ -1541,6 +1563,9 @@ def RUN_RS():
                         break
                     else: #####通信に成功した場合
                         if(ERROR_DETECT == 0):
+                            #CNG3_4
+                            VirtualMachine[VirtualCurrentNum].append("A" + str(Current_Xa)) #仮想並列処理で使用する機器を登録
+                            #CNG3_4
                             Thread = threading.Thread(target = AMove ,args=(Current_Xa,))
                             Thread.start() #####完了処理はM200で行う
                         else:
@@ -1560,16 +1585,26 @@ def RUN_RS():
             #========================================コマンドM用========================================
             elif(Nc_Program[Current_Line_Number][0] =="M"):
                 if(Nc_Program[Current_Line_Number][1] =="200"):
+                    
                     #CNG1_1
                     l = 0
-                    DKeys = DICT_MACHINE_WORK_STAT.keys()
+                    #CNG3_7
+                    #DKeys = DICT_MACHINE_WORK_STAT.keys()
+                    DKeys = VirtualMachine[VirtualCurrentNum]
+                    #CNG3_7
                     for i in DKeys:
                         l = l + DICT_MACHINE_WORK_STAT[i]
                     if(l > 0): #####全ての機器が動作完了しているか確認(動作している場合はlが0より大きくなる)
                         Current_Line_Number = Current_Line_Number -1 #動作が完了してない場合は再度M200の確認をする様にする
+                        #CNG3_8
+                        VirtualMachine[VirtualCurrentNum].clear()
+                        #CNG3_8
                     #CNG1_1
                     l = 0
-                    DKeys = DICT_MACHINE_FIN_STAT.keys()
+                    #CNG3_9
+                    #DKeys = DICT_MACHINE_FIN_STAT.keys()
+                    DKeys = VirtualMachine[VirtualCurrentNum]
+                    #CNG3_9
                     for i in DKeys:
                         l = l + DICT_MACHINE_FIN_STAT[i]
                     if(l > 0): #####各機器でエラーが発生しているか確認(発生している場合はlが0より大きくなる)
@@ -1579,6 +1614,7 @@ def RUN_RS():
                         for i in DKeys:
                             WConsole(i +" : " + str(l))
                         break
+                    
                     #time.sleep(0.2) #####マルチスレッド完了後のタイミング合わせ用（マルチスレッドの同時書込み問題で、時間が短いと次回Ｄｏｂｏｔの軸移動で失敗する）
                 elif(Nc_Program[Current_Line_Number][1] =="99" and Nc_Program[Current_Line_Number][2] =="P"):
                     Current_Line_Number = Dict_Jump_Distination_Num[Nc_Program[Current_Line_Number][3]] - 1 #####Current_Line_Numberがカウントされる事を考慮
@@ -1745,6 +1781,9 @@ def RUN_RS():
                         else:
                             Mode = 2
                         if(ERROR_DETECT == 0):
+                            #CNG3_5
+                            VirtualMachine[VirtualCurrentNum].append("L" + str(Current_Plc)) #仮想並列処理で使用する機器を登録
+                            #CNG3_5
                             Thread = threading.Thread(target = LCheck ,args=(Nc_Program[Current_Line_Number], Current_Plc, Mode,))
                             Thread.start() #####完了処理はM200で行う
                         else:
@@ -1895,6 +1934,9 @@ def RUN_RS():
             VirtualValue[VirtualCurrentNum][2] = SelectedXA
             VirtualValue[VirtualCurrentNum][3] = SelectedRCP
             VirtualValue[VirtualCurrentNum][4] = SelectedKM
+            #CNG4_3
+            VirtualValue[VirtualCurrentNum][5] = ERROR_DETECT
+            #CNG4_3
             VirtualCurrentNum += 1
             if VirtualCurrentNum == VirtualNum:
                 VirtualCurrentNum = 0
