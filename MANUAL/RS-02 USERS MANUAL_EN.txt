@@ -166,7 +166,7 @@ A mode in which the program execution line waits until the operation of the oper
 
 M22
 Error detect OFF command
-A mode in which the program continues to run without waiting for the operation of the operated device to be completed. This allows each device to be operated simultaneously.
+A mode in which the program continues to run without waiting for the operation of the operated device to be completed. This allows each device to be operated simultaneously. The completion of the operation of each device is confirmed by M200 (corresponding to the E command, K command, and R command).
 
 M99
 End of program command
@@ -179,11 +179,11 @@ Changes the execution line of the program to the specified line (N_).
 
 M200
 Waiting command
-When error detect is OFF, waits at the current line until the operation of all devices is completed.
+When error detect is OFF, waits at the current line until the operation of all devices is completed (corresponding to the E command, K command, and R command).
 
 ・N
 N_
-Jump destination command
+Jump destination specification command
 The _ in N_ specifies an arbitrary number.
 Specifies the jump destination from various commands.
 Example: N1
@@ -191,9 +191,8 @@ Example: N1
 ・O
 O_
 KM-1U axis selection command
-The _ is the device number specified by SET A_=COM_, and is specified as 1 to 100.
-Select the KM-1U to be operated with the O_ command.
-
+_ is the device number specified by SET A_=COM_, and is specified from 1 to 100.
+Use the O_ command to select the KM-1U to operate.
 Example: O1
 
 ・P
@@ -208,61 +207,61 @@ Example: P-360 S10 C0
 ・Q
 Q
 NG counter addition command
-Write without a value.
+Write without a numerical value.
 Add 1 to the NG counter.
 Example: Q
 
 ・R
 R_ P_
 PLC input value confirmation command
-The _ in R_ is 16 digits and specifies 0 or 1.
-The _ in P_ specifies the value of the jump destination (N_).
+The _ in R_ is 16 digits and specifies 0 or 1 (the number of digits changes depending on the number of ports on the Arduino compatible machine).
+P__ specifies the value of the jump destination (N_).
 If the specified value is the same as the PLC input value, the execution line of the program will change to the specified line (N_).
-Cannot be operated in M22 mode.
+Not compatible with M22 mode.
 Example: R1000 0000 0000 0000 P4
-Example: R1000000000000000 P4
+Example: R10000000000000000 P4
 
 R_
 PLC input value confirmation command
-The _ in R_ is 16 digits and specifies 0 or 1.
-The program stops until the specified value and the PLC input value are the same.
-Check completion with M200.
+R__ specifies 0 or 1 with 16 digits (the number of digits varies depending on the number of ports on the Arduino compatible machine).
+The program will stop until the specified value is the same as the PLC input value.
+Completion is confirmed with M200.
 Example: R1000 0000 0000 0000
-Example: R1000000000000000
+Example: R10000000000000000
 
 R_=_ P_
 PLC specific input value confirmation command
-The _ in R_ specifies 0 to 15.
-The _ in =_ specifies 0 or 1.
-The _ in P_ specifies the value of the jump destination (N_).
-The leftmost PLC input value (00000000000000000) is set to 0, and if the value at the specified position is the specified value, the execution line of the program is changed to the specified line (N_).
-Not compatible with M22 mode.
+The _ in R_ is set to 0-15 (the maximum value varies depending on the number of ports on the Arduino compatible device).
+The _ in =_ is set to 0 or 1.
+The _ in P_ is set to the value of the jump destination (N_).
+The leftmost value of the PLC input value (00000000000000000) is set to 0, and if the value at the specified position is the specified value, the execution line of the program is changed to the specified line (N_).
+Cannot be operated in M22 mode.
 Example: R0=0 P1
 
 R_=_
 PLC specific input value confirmation command
-The _ in R_ specifies 0 to 15.
-The _ in =_ specifies 0 or 1.
-The leftmost PLC input value (00000000000000000) is set to 0, and the program stops until the value at the specified position is the specified value.
-Check completion with M200.
+The _ in R_ is set to 0-15 (the maximum value varies depending on the number of ports on the Arduino compatible device).
+The _ in =_ is set to 0 or 1.
+The leftmost PLC input value (0000000000000000) is treated as 0, and the program stops until the value at the specified position becomes the specified value.
+M200 confirms completion.
 Example: R0=0
 
 R_ P_
 PLC input value confirmation command
-The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when it does not matter whether the input value of the specified bit is 0 or 1. #_ specifies a variable.
+The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when the input value of the specified bit can be either 0 or 1. #_ specifies a variable (the number of digits changes depending on the number of ports on the Arduino compatible machine).
 The _ in P_ specifies the value of the jump destination (N_).
 Cannot be operated in M22 mode.
-If the specified value is the same as the PLC input value, the program execution line will change to the specified line (N_).
+If the specified value and the PLC input value are the same, the program execution line will change to the specified line (N_).
 Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0,0, 0,0,0,0 P4
-Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0 P4
+Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0 P4
 
 R_
 PLC input value confirmation command
-The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when the input value of the specified bit can be either 0 or 1. #_ specifies a variable.
-The program will stop until the specified value is the same as the PLC input value.
+The _ in R_ specifies 0, 1, *, or #_ in 16 digits. * is used when the input value of the specified bit can be either 0 or 1. #_ specifies a variable (the number of digits changes depending on the number of ports on the Arduino compatible machine).
+The program stops until the specified value and the PLC input value are the same.
 Check completion with M200.
-Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0,0, 0,0,0,0
-Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+Example: R#1,*,1,1, 0,0,0,0, 0,0,0,0, 0,0,0,0,0
+Example: R#1,*,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 
 ・S
 SET A_=COM_
@@ -271,51 +270,49 @@ SET A__ specifies any number between 1 and 100.
 =COM__ specifies the corresponding serial port number.
 Sets the serial port corresponding to the A_ command. Up to 100 units can be connected.
 Example: SET A1=COM1
-
 SET B_=COM_
 RCP axis serial port setting command
 SET B__ specifies any number between 1 and 100.
 =COM__ specifies the corresponding serial port number.
 Sets the serial port corresponding to the B_ command. Up to 100 units can be connected.
 Example: SET B1=COM1
-
 SET H=_
-Counter count setting command
-The _ in =_ can be set to any value.
-The H command sets the number of times the counter will count before the program is stopped.
+Counter number setting command
+=__ specifies any number.
+Sets the number of times the counter will count before the program is stopped with the H command.
 Example: SET H=10
 
-SET I_= COM_,_,_,_,_,_,_,_,_,_,_
-Serial port setting command for measuring device
-The _ in SET I_ can be set to any value between 1 and 100.
-The _ in =COM_ can be set to the corresponding serial port number.
-The following are baud rate, byte size, parity, stop bit, measurement acquisition command, measurement acquisition start position, measurement acquisition end position, tolerance upper limit, tolerance adjustment
-Baud rate: communication speed, according to the measuring device settings.
-Byte size: 5, 6, 7, or 8, according to the measuring device settings.
-Parity: E or N, according to the measuring device settings.
-Stop bit: 1, 1.5, or 2, according to the measuring device settings.
-Measurement acquisition command: A command to acquire measurement values ​​from a measuring instrument, following the settings of the measuring instrument.
+SET I_= COM_,_,_,_,_,_,_,_,_,_
+Serial port setting command for measuring instrument
+The _ in SET I_ specifies any value between 1 and 100.
+The _ in =COM_ specifies the corresponding serial port number.
+The following are baud rate, byte size, parity, stop bit, measurement acquisition command, measurement acquisition start position, measurement acquisition end position, upper tolerance limit, tolerance adjustment
+Baud rate: Communication speed, according to the measurement instrument settings.
+Byte size: 5, 6, 7, or 8, according to the measurement instrument settings.
+Parity: E or N, according to the measurement instrument settings.
+Stop bit: 1, 1.5, or 2, according to the measurement instrument settings.
+Measurement acquisition command: A command to acquire measurement values ​​from a measuring instrument, according to the measurement instrument settings.
 Measurement acquisition start position: Start position of the measurement value in the received string.
 Measurement acquisition end position: End position of the measurement value in the received string.
-Upper tolerance limit: Any upper tolerance limit
+Tolerance upper limit: Any upper tolerance limit
 Tolerance adjustment: Any lower tolerance limit
 Sets the serial port corresponding to the I_ command. Up to 100 units can be connected.
+
 Example: SET I1=COM4,4800,7,E,2,?,0,7,0,-0.007
 
 SET L_=COM_
-Serial port setting command for PLC axis
-The _ in SET L_ can be any number between 1 and 100.
-The _ in =COM_ can be the corresponding serial port number.
+PLC axis serial port setting command
+The _ in SET L_ specifies any number between 1 and 100.
+The _ in =COM_ specifies the corresponding serial port number.
 Sets the serial port corresponding to the L_ command. Up to 100 units can be connected.
+
 Example: SET L1=COM1
 
 SET O_=COM_
-Serial port setting command for KM-1U
-The _ in SET O_ can be any number between 1 and 100.
+KM-1U serial port setting command
+The _ in SET O_ specifies any number between 1 and 100.
 The _ in =COM_ specifies the corresponding serial port number.
-
 Sets the serial port corresponding to the O_ command. Up to 100 units can be connected.
-
 Example: SET O1=COM1
 
 SET V_=_
