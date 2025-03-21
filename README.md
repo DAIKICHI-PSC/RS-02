@@ -1,5 +1,5 @@
 # RS-02
-Easy Robot Maker
+CNC Like Robot Maker
 
 
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.
