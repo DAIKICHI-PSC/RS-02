@@ -1,7 +1,5 @@
 # RS-02
-CNC Like Robot Maker
-
-
+Automatic Machine Control Software
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.
 Interrupts and asynchronous processing are not supported.
 
@@ -47,6 +45,7 @@ The thread will not terminate unless you change print("stop auto_serial_reading"
 
 
 
+自動機制御ソフトウェア
 RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
 
