@@ -5,6 +5,8 @@ Automatic Machine Control Software
 
 https://github.com/user-attachments/assets/3195924e-656b-46b2-82ac-219745925e78
 
+https://github.com/user-attachments/assets/b56e68bd-3377-4f23-9bbf-a2ef380136a3
+
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.
 Interrupts and asynchronous processing are not supported.
 
