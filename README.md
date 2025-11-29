@@ -14,7 +14,7 @@ I couldn't devote more time to development, so I released it.
 We are actually operating 6 robots 24 hours a day.
 I think it's good to use a multi-tap that cuts noise.
 
-Requires Python 3.7.1 or higher and PySide6.
+Requires Python 3.7.1 or higher , pyserial, PySide6 and pykeigan-motor.
 Maybe there are other libraries you need.
 Please install if necessary.
 
@@ -49,6 +49,8 @@ The thread will not terminate unless you change print("stop auto_serial_reading"
 
 2025/3/19 Added virtual parallel processing. In addition to the program from the beginning, you can also virtually execute programs from the specified N number in parallel.
 
+2025/11/29 Deleted all unnecessary functions that has not been used.
+
 
 
 
@@ -61,7 +63,7 @@ RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプロ
 実際に6台のロボットで24時間稼働させております。
 ノイズをカットするマルチタップを使用するのが吉かと思います。
 
-Python 3.7.1以上とPySide6が必要となります。
+Python 3.7.1以上、pyserial、PySide6、pykeigan-motor.が必要となります。
 もしかしたら、他に必要なライブラリがあるかもしれません。
 必要に応じてインストールして下さい。
 
@@ -96,3 +98,4 @@ pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreak
 
 2025/3/19 仮想並列処理を追加しました。先頭からのプログラムに加えて、指定したN番号からもプログラムを仮想的に並列実行出来ます。
 
+2025/11/29 使用していない機能を全て削除しました。
