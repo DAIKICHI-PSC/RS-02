@@ -1,7 +1,5 @@
 #-*- coding: utf-8 -*-
 
-#####2025/11/29 Deleted all unnecessary functions that has not been used
-
 #####2025/3/19 Changed so that M21 and M22 can work properly for each virtual paralell process
 #####Refer to comment CNG4
 
@@ -19,6 +17,7 @@ import os
 import sys
 import time
 import threading
+import re
 import serial
 import serial.tools.list_ports
 from PySide6 import QtCore, QtGui, QtWidgets
@@ -54,11 +53,18 @@ from MODBUS_ASCII_CONVERTERS import DECIMAL_TO_HEX, RESPONSE_TO_BYTES
 #####グローバル変数#######################################################################################
 MOVE_TIME_OUT = 10 #####Ｄｏｂｏｔ移動タイムアウト確認用（経過時間上限値）
 TOLORANCE = 0.2 #####設定公差
+OVERRIDE_VAL = 0.1 #####オーバーライド値
+RAPPID_VAL = 25 #####スピード値
 AOTO_MODE_STAT = 0 #####AUTOモードの状態
 ERROR_DETECT = 1 #####マルチスレッドかシングルスレッドかの確認用
 THREAD_LOCK = threading.Lock() 
 INSTRUMENT_CURRENT_VAL = 0 #####測定器現在値記憶用変数
 RCP_POS_DIFF = 0.1 #####RCP軸位置決精度を記憶する関数
+#####Ｄｏｂｏｔを配列化
+#api = []
+#for i in range(0,101):
+    #api.append(dType.load())
+#####
 #####測定器用にシリアル通信関数を配列化
 LIST_INSTRUMENT = []
 for i in range(0, 101):
@@ -220,7 +226,7 @@ def RUN_RS():
         win.ui.plainTextEdit_1.setTextCursor(cursor) #####選択範囲をハイライト表示する
         win.ui.plainTextEdit_1.setFocus
         app.processEvents() #####ループ中もプロセスが動作する様にする
-        time.sleep(float(win.ui.comboBox_1.currentText()))
+        time.sleep(float(win.ui.comboBox_2.currentText()))
         #####
 
 
@@ -314,6 +320,44 @@ def RUN_RS():
                 else:
                     WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need = for SET command.")
                     break
+            #####
+
+
+            #========================================Dコマンド用========================================
+            #elif(PText.startswith("D") == True): #####PTextの文字列の先頭が"D"で始まるか確認
+                #if(("=" in PText) == True): #####PTextの文字列に"="が含まれるか確認
+                    #Nc_Command, Nc_val = PText.split("=") #####PTextの文字列を"="で分割し、Nc_CommandとNc_valに代入
+                    #Machine_Number = Nc_Command.replace("D", "") #####命令の数字部分のみを取得
+                    #Serial_Number = Check_Serial() #####存在するシリアルポートを取得
+                    #if(Nc_val == ""): #####Nc_valに値があるか確認
+                        #WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number or value.")
+                        #break
+                    #elif(Machine_Number.isdigit() == False):
+                        #WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need number.")
+                        #break
+                    #elif(int(Machine_Number) > 100):
+                        #WConsole("ERROR LINE " + str(Current_Line_Number) + " : Number should be under 100.")
+                        #break
+                    #elif((Nc_val in Serial_Number) == False): #####実際のシリアルポート名にマッチするか確認
+                        #WConsole("ERROR LINE " + str(Current_Line_Number) + " : Serial port not found.")
+                        #break
+                    #else:
+                        #Dict_Machine_Name_Num[Nc_Command] = int(Machine_Number) #####辞書にDコマンドと配列番号を登録
+                        #DSerial[Nc_Command] = Nc_val #####辞書に登録
+                        #DICT_MACHINE_WORK_STAT[Nc_Command] = 0 #####辞書にDコマンドと実行結果を登録
+                        #DICT_MACHINE_FIN_STAT[Nc_Command] = 0 #####辞書にDコマンドと動作状況を登録
+                        #if(Debug_Mode == 1): #<<<<<<<<<<<<<<<<<<<<デバッグモードの場合>>>>>>>>>>>>>>>>>>>>
+                            #WConsole("SET :" +  Nc_Command + " is " + Nc_val + ".")
+                        #ret = DConnect(Nc_val, Dict_Machine_Name_Num[Nc_Command])
+                        #if(ret > 0):
+                            #break
+                        #else:
+                            #if(Debug_Mode == 1): #<<<<<<<<<<<<<<<<<<<<デバッグモードの場合>>>>>>>>>>>>>>>>>>>>
+                                #WConsole("CONNECTION : " + Nc_Command + " through " + Nc_val + " succeed.")
+                            #time.sleep(0.1)
+                #else:
+                    #WConsole("ERROR LINE " + str(Current_Line_Number) + " : Need = for SET command.")
+                    #break
             #####
 
 
@@ -600,7 +644,7 @@ def RUN_RS():
             win.ui.plainTextEdit_1.setTextCursor(cursor) #####選択範囲をハイライト表示する
             win.ui.plainTextEdit_1.setFocus
             app.processEvents() #####ループ中もプロセスが動作する様にする
-            time.sleep(float(win.ui.comboBox_1.currentText()))
+            time.sleep(float(win.ui.comboBox_2.currentText()))
             #####
 
 
@@ -1151,7 +1195,7 @@ def RUN_RS():
             win.ui.plainTextEdit_1.setTextCursor(cursor) #####選択範囲をハイライト表示する
             win.ui.plainTextEdit_1.setFocus
             app.processEvents() #####ループ中もプロセスが動作する様にする
-            time.sleep(float(win.ui.comboBox_1.currentText()))
+            time.sleep(float(win.ui.comboBox_2.currentText()))
             #####
 
 
@@ -2690,9 +2734,9 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
         super(MainWindow1, self).__init__(parent) 
         self.ui = Ui_MainWindow() #OCV3GUI内のクラスの読込
         self.ui.setupUi(self)
-        self.ui.comboBox_1.addItems(["0", "0.1", "0.5", "1"]) #####コンボボックスにアイテムを追加
-        self.ui.comboBox_1.setCurrentIndex(0) #####コンボボックスのアイテムを選択
-        #WConsole(self.ui.comboBox_1.currentText()) #####コンボボックスで選択されているアイテムをコピー
+        self.ui.comboBox_2.addItems(["0", "0.1", "0.5", "1"]) #####コンボボックスにアイテムを追加
+        self.ui.comboBox_2.setCurrentIndex(0) #####コンボボックスのアイテムを選択
+        #WConsole(self.ui.comboBox_2.currentText()) #####コンボボックスで選択されているアイテムをコピー
         #-----シグナルにメッソドを関連付け----------------------------------------
         self.ui.checkBox_3.clicked.connect(self.checkBox1_clicked) #checkBox1_clickedは任意
         QtCore.QObject.connect(self.ui.pushButton_1, QtCore.SIGNAL("clicked()"), self.pushButton1_clicked) #####pushButton1_clickedは任意
@@ -2701,8 +2745,29 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
         QtCore.QObject.connect(self.ui.pushButton_4, QtCore.SIGNAL("clicked()"), self.pushButton4_clicked) #####pushButton4_clickedは任意
         QtCore.QObject.connect(self.ui.pushButton_5, QtCore.SIGNAL("clicked()"), self.pushButton5_clicked) #####pushButton5_clickedは任意
         QtCore.QObject.connect(self.ui.pushButton_6, QtCore.SIGNAL("clicked()"), self.pushButton6_clicked) #####pushButton6_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_7, QtCore.SIGNAL("clicked()"), self.pushButton7_clicked) #####pushButton7_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_8, QtCore.SIGNAL("clicked()"), self.pushButton8_clicked) #####pushButton8_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_9, QtCore.SIGNAL("clicked()"), self.pushButton9_clicked) #####pushButton9_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_10, QtCore.SIGNAL("clicked()"), self.pushButton10_clicked) #####pushButton10_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_11, QtCore.SIGNAL("clicked()"), self.pushButton11_clicked) #####pushButton11_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_12, QtCore.SIGNAL("clicked()"), self.pushButton12_clicked) #####pushButton12_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_13, QtCore.SIGNAL("clicked()"), self.pushButton13_clicked) #####pushButton13_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_14, QtCore.SIGNAL("clicked()"), self.pushButton14_clicked) #####pushButton14_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_15, QtCore.SIGNAL("clicked()"), self.pushButton15_clicked) #####pushButton15_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_16, QtCore.SIGNAL("clicked()"), self.pushButton16_clicked) #####pushButton16_clickedは任意
+        QtCore.QObject.connect(self.ui.pushButton_17, QtCore.SIGNAL("clicked()"), self.pushButton17_clicked) #####pushButton17_clickedは任意
         QtCore.QObject.connect(self.ui.radioButton_1, QtCore.SIGNAL("clicked()"), self.radioButton1_checked) #####radioButton1_clickedは任意
         QtCore.QObject.connect(self.ui.radioButton_2, QtCore.SIGNAL("clicked()"), self.radioButton2_checked) #####radioButton2_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_3, QtCore.SIGNAL("clicked()"), self.radioButton3_checked) #####radioButton3_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_4, QtCore.SIGNAL("clicked()"), self.radioButton4_checked) #####radioButton4_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_5, QtCore.SIGNAL("clicked()"), self.radioButton5_checked) #####radioButton5_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_6, QtCore.SIGNAL("clicked()"), self.radioButton6_checked) #####radioButton6_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_7, QtCore.SIGNAL("clicked()"), self.radioButton7_checked) #####radioButton7_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_8, QtCore.SIGNAL("clicked()"), self.radioButton8_checked) #####radioButton8_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_9, QtCore.SIGNAL("clicked()"), self.radioButton9_checked) #####radioButton9_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_10, QtCore.SIGNAL("clicked()"), self.radioButton10_checked) #####radioButton10_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_11, QtCore.SIGNAL("clicked()"), self.radioButton11_checked) #####radioButton11_clickedは任意
+        QtCore.QObject.connect(self.ui.radioButton_12, QtCore.SIGNAL("clicked()"), self.radioButton12_checked) #####radioButton12_clickedは任意
         #QtCore.QObject.connect(self.ui.checkBox_1, QtCore.SIGNAL("clicked()"), self.checkBox1_checked) #####checkBox1_clickedは任意
         #-----ウィジットのイベントをメインウィンドウで取得する設定----------------------------------------
         #self.ui.label1.installEventFilter(self)
@@ -2760,6 +2825,83 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
 
     #-----pushButton3用イベント処理----------------------------------------
     def pushButton3_clicked(self):
+        self.ui.groupBox_3.setEnabled(False)
+        self.ui.groupBox_4.setEnabled(False)
+        self.ui.groupBox_5.setEnabled(False)
+        self.ui.pushButton_14.setEnabled(False)
+        #dType.SetHOMECmd(api[self.ui.comboBox_1.currentIndex()],0) #####原点復帰
+        time.sleep(25)
+        self.ui.pushButton_3.setEnabled(True)
+        self.ui.pushButton_4.setEnabled(True)
+        self.ui.pushButton_5.setEnabled(True)
+        self.ui.pushButton_6.setEnabled(True)
+        self.ui.pushButton_7.setEnabled(True)
+        self.ui.pushButton_8.setEnabled(True)
+        self.ui.pushButton_9.setEnabled(True)
+        self.ui.pushButton_10.setEnabled(True)
+        self.ui.pushButton_11.setEnabled(True)
+        self.ui.pushButton_14.setEnabled(True)
+        self.ui.groupBox_3.setEnabled(True)
+        self.ui.groupBox_4.setEnabled(True)
+        self.ui.groupBox_5.setEnabled(True)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton4用イベント処理----------------------------------------
+    def pushButton4_clicked(self):
+        #pose = dType.GetPose(api[self.ui.comboBox_1.currentIndex()]) #####ポジション取得
+        DMove(1, pose[0] + OVERRIDE_VAL, pose[1], pose[2], RAPPID_VAL, self.ui.comboBox_1.currentIndex())
+        time.sleep(0.2)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton5用イベント処理----------------------------------------
+    def pushButton5_clicked(self):
+        #pose = dType.GetPose(api[self.ui.comboBox_1.currentIndex()]) #####ポジション取得
+        DMove(1, pose[0] - OVERRIDE_VAL, pose[1], pose[2], RAPPID_VAL, self.ui.comboBox_1.currentIndex())
+        time.sleep(0.2)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton6用イベント処理----------------------------------------
+    def pushButton6_clicked(self):
+        #pose = dType.GetPose(api[self.ui.comboBox_1.currentIndex()]) #####ポジション取得
+        DMove(1, pose[0], pose[1] + OVERRIDE_VAL, pose[2], RAPPID_VAL, self.ui.comboBox_1.currentIndex())
+        time.sleep(0.2)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton7用イベント処理----------------------------------------
+    def pushButton7_clicked(self):
+        #pose = dType.GetPose(api[self.ui.comboBox_1.currentIndex()]) #####ポジション取得
+        DMove(1, pose[0], pose[1] - OVERRIDE_VAL, pose[2], RAPPID_VAL, self.ui.comboBox_1.currentIndex())
+        time.sleep(0.2)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton8用イベント処理----------------------------------------
+    def pushButton8_clicked(self):
+        pose = dType.GetPose(api[self.ui.comboBox_1.currentIndex()]) #####ポジション取得
+        DMove(1, pose[0], pose[1], pose[2] + OVERRIDE_VAL, RAPPID_VAL, self.ui.comboBox_1.currentIndex())
+        time.sleep(0.2)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton9用イベント処理----------------------------------------
+    def pushButton9_clicked(self):
+        #pose = dType.GetPose(api[self.ui.comboBox_1.currentIndex()]) #####ポジション取得
+        DMove(1, pose[0], pose[1], pose[2] - OVERRIDE_VAL, RAPPID_VAL, self.ui.comboBox_1.currentIndex())
+        time.sleep(0.2)
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton10用イベント処理----------------------------------------
+    def pushButton10_clicked(self):
+        cursor = self.ui.plainTextEdit_1.textCursor()
+        cursor.movePosition(QtGui.QTextCursor.End)
+        x, y, z = DPos(self.ui.comboBox_1.currentIndex())
+        cursor.insertText("G1 " + "X" + x + " Y" + y + " Z" + z + " F100\r\n")
+        self.ui.plainTextEdit_1.setTextCursor(cursor)
+
+    #-----pushButton11用イベント処理----------------------------------------
+    def pushButton11_clicked(self):
+        DPos(self.ui.comboBox_1.currentIndex())
+
+    #-----pushButton12用イベント処理----------------------------------------
+    def pushButton12_clicked(self):
         serial_list = serial.tools.list_ports.comports()
         if(len(serial_list) > 0):
             for i in range(len(serial_list)):
@@ -2768,8 +2910,39 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
         else:
             WConsole("ERROR : No serial port found.")
 
-    #-----pushButton4用イベント処理----------------------------------------
-    def pushButton4_clicked(self):
+    #-----pushButton13用イベント処理----------------------------------------
+    def pushButton13_clicked(self):
+        if(self.ui.comboBox_1.currentIndex() != -1): #####コンボボックスのインデックスを確認
+            ret = DConnect(self.ui.comboBox_1.currentText(), self.ui.comboBox_1.currentIndex()) #####Ｄｏｂｏｔに接続
+            if(ret == 0):
+                DPos(self.ui.comboBox_1.currentIndex())
+                self.ui.pushButton_12.setEnabled(False)
+                self.ui.pushButton_13.setEnabled(False)
+                self.ui.pushButton_14.setEnabled(True)
+                self.ui.groupBox_1.setEnabled(False)
+                self.ui.groupBox_3.setEnabled(True)
+                self.ui.groupBox_4.setEnabled(True)
+                self.ui.groupBox_5.setEnabled(True)
+                self.ui.comboBox_1.setEnabled(False)
+                time.sleep(0.1)
+        else:
+            WConsole("ERROR : No serial port selected.")
+
+    #-----pushButton14用イベント処理----------------------------------------
+    def pushButton14_clicked(self):
+        DDisconnect(self.ui.comboBox_1.currentIndex())
+        self.ui.pushButton_12.setEnabled(True)
+        self.ui.pushButton_13.setEnabled(True)
+        self.ui.pushButton_14.setEnabled(False)
+        self.ui.groupBox_1.setEnabled(True)
+        self.ui.groupBox_3.setEnabled(False)
+        self.ui.groupBox_4.setEnabled(False)
+        self.ui.groupBox_5.setEnabled(False)
+        self.ui.comboBox_1.setEnabled(True)
+        time.sleep(0.2)
+
+    #-----pushButton15用イベント処理----------------------------------------
+    def pushButton15_clicked(self):
     #####ファイル読込
         filepath, _ = QtWidgets.QFileDialog.getOpenFileName(self, "Open File", "",'txt File (*.txt)')
         if filepath:
@@ -2784,8 +2957,8 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
             #####
     #####
 
-    #-----pushButton5用イベント処理----------------------------------------
-    def pushButton5_clicked(self):
+    #-----pushButton16用イベント処理----------------------------------------
+    def pushButton16_clicked(self):
     #####ファイル書込み
         filepath, _ = QtWidgets.QFileDialog.getSaveFileName(self, "Open File", "",'txt File (*.txt)')
         if filepath:
@@ -2801,9 +2974,8 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
             ret = msgbox.exec() #####メッセージボックスを表示
             #####
     #####
-
-    #-----pushButton6用イベント処理----------------------------------------
-    def pushButton6_clicked(self):
+    #-----pushButton17用イベント処理----------------------------------------
+    def pushButton17_clicked(self):
         global LOOP_COUNT
         global NG_VAL
         LOOP_COUNT = 0
@@ -2811,25 +2983,93 @@ class MainWindow1(QtWidgets.QMainWindow, Ui_MainWindow):
         self.ui.lineEdit_4.setText(str(LOOP_COUNT))
         self.ui.lineEdit_5.setText(str(NG_VAL))
     #####
-
     def radioButton1_checked(self):
+        self.ui.pushButton_1.setEnabled(False)
+        self.ui.pushButton_15.setEnabled(True)
+        self.ui.pushButton_16.setEnabled(True)
+        self.ui.pushButton_17.setEnabled(True)
+        self.ui.plainTextEdit_1.setReadOnly(False)
+        self.ui.groupBox_2.setEnabled(False)
+        self.ui.groupBox_5.setEnabled(False)
+        self.ui.groupBox_6.setEnabled(False)
+        self.ui.groupBox_7.setEnabled(True)
+
+
+    def radioButton2_checked(self):
+        self.ui.pushButton_1.setEnabled(True)
+        self.ui.pushButton_17.setEnabled(False)
+        self.ui.plainTextEdit_1.setReadOnly(True)
+        self.ui.groupBox_2.setEnabled(True)
+        self.ui.groupBox_5.setEnabled(False)
+        self.ui.groupBox_6.setEnabled(False)
+        self.ui.groupBox_7.setEnabled(False)
+        self.ui.comboBox_2.setEnabled(True)
+
+    def radioButton3_checked(self):
         self.ui.pushButton_1.setEnabled(False)
         self.ui.pushButton_3.setEnabled(True)
         self.ui.pushButton_4.setEnabled(True)
         self.ui.pushButton_5.setEnabled(True)
         self.ui.pushButton_6.setEnabled(True)
-        self.ui.plainTextEdit_1.setReadOnly(False)
+        self.ui.pushButton_7.setEnabled(True)
+        self.ui.pushButton_8.setEnabled(True)
+        self.ui.pushButton_9.setEnabled(True)
+        self.ui.pushButton_10.setEnabled(True)
+        self.ui.pushButton_11.setEnabled(True)
+        self.ui.pushButton_12.setEnabled(True)
+        self.ui.pushButton_13.setEnabled(True)
+        self.ui.pushButton_17.setEnabled(False)
+        self.ui.plainTextEdit_1.setEnabled(True)
         self.ui.groupBox_2.setEnabled(False)
-
-    def radioButton2_checked(self):
-        self.ui.pushButton_1.setEnabled(True)
-        self.ui.pushButton_3.setEnabled(False)
-        self.ui.pushButton_4.setEnabled(False)
-        self.ui.pushButton_5.setEnabled(False)
-        self.ui.pushButton_6.setEnabled(False)
-        self.ui.plainTextEdit_1.setReadOnly(True)
-        self.ui.groupBox_2.setEnabled(True)
+        self.ui.groupBox_6.setEnabled(True)
+        self.ui.groupBox_7.setEnabled(False)
         self.ui.comboBox_1.setEnabled(True)
+        self.ui.comboBox_1.clear() #####コンボボックスから全てのアイテムを削除
+        Serial_Number = []
+        Serial_Number = Check_Serial()
+        self.ui.comboBox_1.addItems(Serial_Number) #####コンボボックスにアイテムを追加
+        self.ui.comboBox_1.setCurrentIndex(-1) #####コンボボックスのアイテムを選択
+        #WConsole(self.ui.comboBox_1.currentText()) #####コンボボックスで選択されているアイテムをコピー
+
+
+    #def checkBox1_checked(self):
+
+
+    def radioButton4_checked(self):
+        global OVERRIDE_VAL
+        OVERRIDE_VAL = 0.1
+
+    def radioButton5_checked(self):
+        global OVERRIDE_VAL
+        OVERRIDE_VAL = 1
+
+    def radioButton6_checked(self):
+        global OVERRIDE_VAL
+        OVERRIDE_VAL = 5
+
+    def radioButton7_checked(self):
+        global OVERRIDE_VAL
+        OVERRIDE_VAL = 10
+
+    def radioButton8_checked(self):
+        global OVERRIDE_VAL
+        OVERRIDE_VAL = 20
+
+    def radioButton9_checked(self):
+        global OVERRIDE_VAL
+        OVERRIDE_VAL = 30
+
+    def radioButton10_checked(self):
+        global RAPPID_VAL
+        RAPPID_VAL = 25
+
+    def radioButton11_checked(self):
+        global RAPPID_VAL
+        RAPPID_VAL = 50
+
+    def radioButton12_checked(self):
+        global RAPPID_VAL
+        RAPPID_VAL = 100
 
 
 
