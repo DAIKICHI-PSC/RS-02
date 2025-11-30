@@ -15,46 +15,45 @@ Automatic Machine Control Software(Making robots accessible to everyone)
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.  
 Interrupts and asynchronous processing are not supported.
 
-I couldn't devote more time to development, so I released it(It would be helpful if you could report a bug).
-We are actually operating 6 robots 24 hours a day.
-I think it's good to use a multi-tap that cuts noise.
+I couldn't devote more time to development, so I released it(It would be helpful if you could report a bug).  
+We are actually operating 6 robots 24 hours a day.  
+I think it's good to use a multi-tap that cuts noise.  
 
-Requires Python 3.7.1 or higher , pyserial, PySide6 and pykeigan-motor.
-Maybe there are other libraries you need.
-Please install if necessary.
+Requires Python 3.7.1 or higher , pyserial, PySide6 and pykeigan-motor.  
+Maybe there are other libraries you need.  
+Please install if necessary.  
 
 
-24V compatible Arduino compatible machine (COMFILE Technology's FA-DUINO-24RA etc.) can input / output 24V (5V Arduino can also be used, but there is a possibility of malfunction due to noise).
-Change the port start number and the number of ports of the firmware "PLC-01.ino" depending on the model.
-Depending on the input value, the program processing can be branched.
-Connect with RS232C.
+24V compatible Arduino compatible machine (COMFILE Technology's FA-DUINO-24RA etc.) can input / output 24V (5V Arduino can also be used, but there is a possibility of malfunction due to noise).  
+Change the port start number and the number of ports of the firmware "PLC-01.ino" depending on the model.  
+Depending on the input value, the program processing can be branched.  
+Connect with RS232C.  
 
-Compatible with SUS's single-axis robot XA series (teaching only).
-Compatible with IAI's single-axis robot RCP series (position specification only).
-Asynchronous operation of multiple axes is possible.
-Connect with RS232C.
+Compatible with SUS's single-axis robot XA series (teaching only).  
+Compatible with IAI's single-axis robot RCP series (position specification only).  
+Asynchronous operation of multiple axes is possible.  
+Connect with RS232C.  
 
-Compatible with measuring instruments that can receive measured values with RS232C.
-By specifying the tolerance range and judging OK and NG, the program processing can be branched.
+Compatible with measuring instruments that can receive measured values with RS232C.  
+By specifying the tolerance range and judging OK and NG, the program processing can be branched.  
 
 Up to 100 devices can be connected to each device.
 
 
-Execute "RS02_MAIN.py".
-To run the program, load the program (text file) in "EDIT" mode and press the "RUN" button in "AUTO" mode to run it.
-See "RS-02 USERS MANUAL.docx" for instruction details. 
+Execute "RS02_MAIN.py".  
+To run the program, load the program (text file) in "EDIT" mode and press the "RUN" button in "AUTO" mode to run it.  
+See "RS-02 USERS MANUAL.docx" for instruction details.   
 
 
-2024/8/19 Use nuitka to make RS-02 faster(If it is detected as a virus, please allow it to run).
-
+2024/8/19 Use nuitka to make RS-02 faster(If it is detected as a virus, please allow it to run).  
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
 
-2024/9/10 Compatible with Keigan's KM-1U.
+2024/9/10 Compatible with Keigan's KM-1U.  
 The thread will not terminate unless you change print("stop auto_serial_reading") to break in pykeigan's usbcontroller.py.
 
-2025/3/19 Added virtual parallel processing. In addition to the program from the beginning, you can also virtually execute programs from the specified N number in parallel.
+2025/3/19 Added virtual parallel processing. In addition to the program from the beginning, you can also virtually execute programs from the specified N number in parallel.  
 
-2025/11/29 Deleted all unnecessary functions that has not been used.
+2025/11/29 Deleted all unnecessary functions that has not been used.  
 
 ---
 
