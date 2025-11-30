@@ -133,5 +133,5 @@ The Qt Company
 https://www.qt.io/ja-jp/  
 
 Developer of software that controlls rotation device  
-Keigan inc.
+Keigan inc.  
 https://github.com/keigan-motor/pykeigan_motor  
