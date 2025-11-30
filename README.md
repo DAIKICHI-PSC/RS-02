@@ -129,9 +129,50 @@ SPF LISENCE
 
 
 
+PySide6
+
+LGPLv3
+
+配布、商用利用が可能です。
+
+
+
 PyKeigan
 
 MIT LISENCE
 
 配布、改変、商用利用等、全て自由です。
 
+
+
+［appreciation（感謝）］
+
+Developer of Python(programming language)
+
+Python Software Foundation and the community
+
+https://www.python.org/
+
+
+
+Developer of serial communication module
+
+pyserial and the community
+
+https://github.com/pyserial/pyserial
+
+
+
+Developer of GUI module.
+
+The Qt Company
+
+https://www.qt.io/ja-jp/
+
+
+
+Developer of software that converts Python programs to executable file
+
+pyinstaller and the community
+
+https://github.com/pyinstaller
