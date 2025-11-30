@@ -15,7 +15,7 @@ Automatic Machine Control Software(Making robots accessible to everyone)
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.
 Interrupts and asynchronous processing are not supported.
 
-I couldn't devote more time to development, so I released it.
+I couldn't devote more time to development, so I released it(It would be helpful if you could report a bug).
 We are actually operating 6 robots 24 hours a day.
 I think it's good to use a multi-tap that cuts noise.
 
@@ -63,7 +63,7 @@ The thread will not terminate unless you change print("stop auto_serial_reading"
 RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
 
-これ以上開発に時間が割けなくなったので、公開しました。
+これ以上開発に時間が割けなくなったので、公開しました（バグを報告して貰えると助かります）。
 実際に6台のロボットで24時間稼働させております。
 ノイズをカットするマルチタップを使用するのが吉かと思います。
 
