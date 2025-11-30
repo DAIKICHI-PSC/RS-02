@@ -22,7 +22,7 @@ Maybe there are other libraries you need.
 Please install if necessary.  
 
 24V compatible Arduino compatible machine (COMFILE Technology's FA-DUINO-24RA etc.) can input / output 24V (5V Arduino can also be used, but there is a possibility of malfunction due to noise).  
-Change the port start number and the number of ports of the firmware "PLC-01.ino" depending on the model.  
+Change the port start number and the number of ports of the firmware "PLC-01.ino" depending on the model then upload to the device.  
 Depending on the input value, the program processing can be branched.  
 Connect with RS232C.  
 
@@ -66,7 +66,7 @@ Python 3.7.1以上、pyserial、PySide6、pykeigan-motor.が必要となりま�
 必要に応じてインストールして下さい。  
 
 24V対応のArduino互換機(COMFILE Technology社のFA-DUINO-24RA等)で24Vの入出力が可能（5VのArduinoも使用可能ですが、ノイズによる誤動作の可能性があります）。  
-機種により、ファームウェア「PLC-01.ino」のポート開始番号とポート数を変更してください。  
+機種により、ファームウェア「PLC-01.ino」のポート開始番号とポート数を変更して、本体にアップロードして下さい。  
 入力値により、プログラム処理の分岐が出来ます。  
 RS232Cで接続します。  
 
