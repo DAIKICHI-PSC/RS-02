@@ -103,7 +103,7 @@ pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreak
 
 
 
-［License(ライセンス)］
+[License(ライセンス)]
 
 This program(本プログラム)
 
@@ -145,7 +145,7 @@ Distribution, modification, commercial use, etc. are all permitted.(配布、改
 
 
 
-［appreciation(感謝)］
+[appreciation(感謝)]
 
 Developer of Python(programming language)
 
