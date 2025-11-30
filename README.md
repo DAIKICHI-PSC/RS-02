@@ -132,6 +132,6 @@ Developer of GUI module
 The Qt Company  
 https://www.qt.io/ja-jp/  
 
-Developer of software that converts Python programs to executable file  
-pyinstaller and the community  
-https://github.com/pyinstaller  
+Developer of software that controlls rotation device  
+Keigan inc.
+https://github.com/keigan-motor/pykeigan_motor  
