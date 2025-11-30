@@ -1,4 +1,5 @@
 # RS-02
+Robot for everyone!
 ---
 https://github.com/user-attachments/assets/b6489353-7651-4ffe-bb28-c00283803c31
 
