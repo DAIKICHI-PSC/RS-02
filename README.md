@@ -103,13 +103,13 @@ pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreak
 
 
 
-［ライセンス］
+［License(ライセンス)］
 
-本プログラム
+This program(本プログラム)
 
 MIT LISENCE
 
-配布、改変、商用利用等、全て自由です。
+Distribution, modification, commercial use, etc. are all permitted.(配布、改変、商用利用等、全て自由です。)
 
 
 
@@ -117,7 +117,7 @@ Python
 
 Python Software Foundation License
 
-成果物の配布、改変、商用利用等、全て自由です。
+Distribution, modification, commercial use, etc. of the resulting work are all permitted.(成果物の配布、改変、商用利用等、全て自由です。)
 
 
 
@@ -125,7 +125,7 @@ pySerial
 
 SPF LISENCE
 
-配布、商用利用が可能です。
+Distribution and commercial use are permitted.(配布、商用利用が可能です。)
 
 
 
@@ -133,7 +133,7 @@ PySide6
 
 LGPLv3
 
-配布、商用利用が可能です。
+Distribution and commercial use are permitted.(配布、商用利用が可能です。
 
 
 
@@ -141,11 +141,11 @@ PyKeigan
 
 MIT LISENCE
 
-配布、改変、商用利用等、全て自由です。
+Distribution, modification, commercial use, etc. are all permitted.(配布、改変、商用利用等、全て自由です。)
 
 
 
-［appreciation（感謝）］
+［appreciation(感謝)］
 
 Developer of Python(programming language)
 
