@@ -100,3 +100,38 @@ pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreak
 2025/3/19 仮想並列処理を追加しました。先頭からのプログラムに加えて、指定したN番号からもプログラムを仮想的に並列実行出来ます。
 
 2025/11/29 使用していない機能を全て削除しました。
+
+
+
+［ライセンス］
+
+本プログラム
+
+MIT LISENCE
+
+配布、改変、商用利用等、全て自由です。
+
+
+
+Python
+
+Python Software Foundation License
+
+成果物の配布、改変、商用利用等、全て自由です。
+
+
+
+pySerial
+
+SPF LISENCE
+
+配布、商用利用が可能です。
+
+
+
+PyKeigan
+
+MIT LISENCE
+
+配布、改変、商用利用等、全て自由です。
+
