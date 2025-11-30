@@ -1,12 +1,16 @@
 # RS-02
 
+---
+
 https://github.com/user-attachments/assets/b6489353-7651-4ffe-bb28-c00283803c31
 
 https://github.com/user-attachments/assets/3195924e-656b-46b2-82ac-219745925e78
 
 https://github.com/user-attachments/assets/b56e68bd-3377-4f23-9bbf-a2ef380136a3
 
-Automatic Machine Control Software
+Automatic Machine Control Software(Making robots accessible to everyone)
+
+---
 
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.
 Interrupts and asynchronous processing are not supported.
@@ -41,7 +45,7 @@ To run the program, load the program (text file) in "EDIT" mode and press the "R
 See "RS-02 USERS MANUAL.docx" for instruction details. 
 
 
-2024/8/19 Use nuitka to make RS-02 faster.
+2024/8/19 Use nuitka to make RS-02 faster(If it is detected as a virus, please allow it to run).
 
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
 
@@ -52,10 +56,9 @@ The thread will not terminate unless you change print("stop auto_serial_reading"
 
 2025/11/29 Deleted all unnecessary functions that has not been used.
 
+---
 
-
-
-自動機制御ソフトウェア
+自動機制御ソフトウェア（ロボット制作を全ての人に）
 
 RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。
 割り込みや非同期処理には未対応となります。
@@ -90,7 +93,7 @@ RS232Cで測定値が受け取れる測定器に対応。
 命令の詳細は「RS-02 USERS MANUAL.docx」を参照してください。
 
 
-2024/8/19 nuitkaを使用するとRS-02を高速に動作させる事が可能です。
+2024/8/19 nuitkaを使用するとRS-02を高速に動作させる事が可能です（ウイルスとして検出された場合は、使用を許可して下さい）。
 
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
 
@@ -101,7 +104,7 @@ pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreak
 
 2025/11/29 使用していない機能を全て削除しました。
 
-
+---
 
 [License(ライセンス)]
 
@@ -143,7 +146,7 @@ MIT LISENCE
 
 Distribution, modification, commercial use, etc. are all permitted.(配布、改変、商用利用等、全て自由です。)
 
-
+---
 
 [appreciation(感謝)]
 
