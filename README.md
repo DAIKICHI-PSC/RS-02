@@ -38,7 +38,7 @@ Up to 100 devices can be connected to each device.
 
 Execute "RS02_MAIN.py".  
 To run the program, load the program (text file) in "EDIT" mode and press the "RUN" button in "AUTO" mode to run it.  
-See "RS-02 USERS MANUAL.docx" for instruction details.   
+See "RS-02 USERS MANUAL_EN.txt" for instruction details.   
 
 2024/8/19 Use nuitka to make RS-02 faster(If it is detected as a virus, please allow it to run).  
 nuitka --mingw64 --follow-imports  --onefile --standalone --enable-plugin=pyside6 RS02_MAIN.py
