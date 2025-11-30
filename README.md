@@ -5,7 +5,9 @@ https://github.com/user-attachments/assets/b6489353-7651-4ffe-bb28-c00283803c31
 https://github.com/user-attachments/assets/3195924e-656b-46b2-82ac-219745925e78
 
 https://github.com/user-attachments/assets/b56e68bd-3377-4f23-9bbf-a2ef380136a3
+
 ---
+
 Automatic Machine Control Software(Making robots accessible to everyone)
 
 RS-02 is software that can control inspection machines and robots with CNC-like programs without using PLC.  
@@ -47,7 +49,9 @@ The thread will not terminate unless you change print("stop auto_serial_reading"
 2025/3/19 Added virtual parallel processing. In addition to the program from the beginning, you can also virtually execute programs from the specified N number in parallel.  
 
 2025/11/29 Deleted all unnecessary functions that has not been used.  
+
 ---
+
 自動機制御ソフトウェア（ロボット制作を全ての人に）
 
 RS-02は、検査機やロボットを、PLC使用せずにCNCライクなプログラムで制御出来るソフトウェアです。  
@@ -89,7 +93,9 @@ pykeiganのusbcontroller.pyにある、print("stop auto_serial_reading")をbreak
 2025/3/19 仮想並列処理を追加しました。先頭からのプログラムに加えて、指定したN番号からもプログラムを仮想的に並列実行出来ます。  
 
 2025/11/29 使用していない機能を全て削除しました。  
+
 ---
+
 [License(ライセンス)]
 
 This program(本プログラム)
@@ -121,7 +127,9 @@ PyKeigan
 MIT LISENCE
 
 Distribution, modification, commercial use, etc. are all permitted.(配布、改変、商用利用等、全て自由です。)
+
 ---
+
 [appreciation(感謝)]
 
 Developer of Python(programming language)
