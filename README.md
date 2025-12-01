@@ -112,7 +112,7 @@ Distribution and commercial use are permitted.(配布、商用利用が可能で
 
 PySide6  
 LGPLv3  
-Distribution and commercial use are permitted.(配布、商用利用が可能です。  
+Distribution and commercial use are permitted.(配布、商用利用が可能です。)    
 
 PyKeigan  
 MIT LISENCE  
